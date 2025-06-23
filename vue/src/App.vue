@@ -1,25 +1,18 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-blue-500 text-white text-3xl font-bold">
-    Tailwind funguje! 🎉
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <SideBar v-if="showNavbar" />
+  <router-view />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup>
+import { computed } from 'vue';
+import SideBar from './components/SideBar.vue';
+import { useRoute } from 'vue-router'
+
+const route = useRoute();
+
+const showNavbar = computed(() =>
+  route.meta.navbar !== false
+)
+</script>
+
+<style scoped></style>
