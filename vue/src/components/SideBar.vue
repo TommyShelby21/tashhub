@@ -13,7 +13,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a @click="logout()"
                         class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                         <span class="flex-1 ms-3 whitespace-nowrap">Odhlásit se</span>
                     </a>
@@ -22,10 +22,19 @@
         </div>
     </aside>
 </template>
-<script>
-export default {
+<script setup>
+import { useMainStore } from '../store'
 
+const mainStore = useMainStore()
+function logout() {
+    mainStore.api.post('/api/logout/', {}).then(response => {
+        window.location.href = '/login'
+
+    }).catch(error => {
+        console.error('Logout failed:', error)
+    })
 }
+
 </script>
 <style lang="">
 

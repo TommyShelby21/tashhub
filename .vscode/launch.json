@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Run Django + Vue",
+      "configurations": [
+        "Django",
+        "Vue"
+      ]
+    }
+  ],
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Vue",
+      "cwd": "${workspaceFolder}/vue",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 1001,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "Django",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "runserver",
+        "1001"
+      ],
+      "django": true
+    }
+  ]
+}

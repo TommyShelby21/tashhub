@@ -5,3 +5,4 @@ Plně funkční nástroj pro správu projektů a úkolů. Technologie: Vue 3, Dj
 - Vue 3 SPA pro správu úkolů
 - Django REST backend s PostgreSQL
 - Docker a GitHub Actions pro CI/CD
+- Důraz na bezpečnost - Django JWT

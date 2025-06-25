@@ -1,6 +1,8 @@
+from django.contrib import admin
 from django.urls import path, include
+from system.views import protected_view
 
 urlpatterns = [
-    path('', include('authentication.urls')),
-    # jiné url tvého projektu
+    path('admin/', admin.site.urls),
+    path('api/protected/', protected_view, name='protected'),
 ]
