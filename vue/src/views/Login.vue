@@ -51,7 +51,7 @@ function loginUser() {
     mainStore.api.post('/api/login/', {
         username: username.value,
         password: password.value,
-    }
+    },
     ).then(response => {
         window.location.href = '/';
     })

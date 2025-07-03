@@ -20,7 +20,6 @@
         "run",
         "dev"
       ],
-      "port": 1001,
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
@@ -31,9 +30,11 @@
       "program": "${workspaceFolder}/manage.py",
       "args": [
         "runserver",
-        "1001"
+        "0.0.0.0:1000"
       ],
-      "django": true
+      "django": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

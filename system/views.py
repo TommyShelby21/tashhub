@@ -6,7 +6,7 @@ from system.serializers import UserSerializer
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def profile_view(request):
+def profile(request):
     serializer = UserSerializer(request.user)
 
     return Response(serializer.data)
@@ -15,5 +15,4 @@ def profile_view(request):
 @permission_classes([IsAuthenticated])
 def protected_view(request):
     user = request.user
-    print(user)
     return Response({'message': f'Ahoj {user.username}, jsi úspěšně autentizovaný!'})

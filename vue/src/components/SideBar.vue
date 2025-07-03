@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="">
+    <button type="button" class="hidden">
         <span>Open sidebar</span>
     </button>
 
@@ -7,14 +7,19 @@
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50">
             <ul class="">
                 <li>
-                    <a href="#"
+                    <router-link :to="{ path: '/' }"
                         class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                         <span class="ms-3">Nástěnka</span>
-                    </a>
+                    </router-link>
                 </li>
                 <li>
-                    <a @click="logout()"
+                    <router-link :to="{ path: '/profile' }"
                         class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        <span class="ms-3">Můj účet</span>
+                    </router-link>
+                </li>
+                <li>
+                    <a @click="logout()" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                         <span class="flex-1 ms-3 whitespace-nowrap">Odhlásit se</span>
                     </a>
                 </li>

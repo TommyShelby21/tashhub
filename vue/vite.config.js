@@ -8,16 +8,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: '127.0.0.1',
+    host: 'localhost',
     port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:1001',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
   }
 
 })
