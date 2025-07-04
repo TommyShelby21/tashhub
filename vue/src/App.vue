@@ -1,6 +1,6 @@
 <template>
   <SideBar v-if="showNavbar" />
-  <div class="ms-64 p-2">
+  <div class="p-2 sm:ml-64">
     <router-view />
   </div>
 </template>
@@ -10,14 +10,8 @@ import { computed } from 'vue';
 import SideBar from './components/SideBar.vue';
 import { useRoute } from 'vue-router'
 import { useMainStore } from './store';
-import { onMounted } from 'vue';
 
 const store = useMainStore();
-
-onMounted(() => {
-  store.setupInterceptors();
-});
-
 
 const route = useRoute();
 

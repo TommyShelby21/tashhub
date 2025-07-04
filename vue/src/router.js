@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useMainStore } from './store.js'
 import HomePage from './views/HomePage.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
 import Profile from './views/Profile.vue'
-import { useMainStore } from './store.js'
+import TaskOrganizator from './views/TaskOrganizator.vue'
 
 const routes = [
     {
@@ -28,6 +29,12 @@ const routes = [
         path: '/profile',
         name: 'Profile',
         component: Profile,
+        meta: { navbar: true }
+    },
+        {
+        path: '/task-organizator',
+        name: 'TaskOrganizator',
+        component: TaskOrganizator,
         meta: { navbar: true }
     },
 ]

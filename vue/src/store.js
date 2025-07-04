@@ -38,32 +38,34 @@ export const useMainStore = defineStore('main', {
             axios.interceptors.response.use(
                 response => response,
                 async error => {
-                    const originalRequest = error.config;
+                    const { config, response } = error;
 
-                    // Check if it’s a 401 and not a retry of the refresh endpoint
                     if (
-                        error.response &&
-                        error.response.status === 401 &&
-                        !originalRequest._retry &&
-                        !originalRequest.url.includes('/api/token/refresh/')
+                        response?.status === 401 &&
+                        !config._retry &&
+                        !config.url.includes('/api/token/refresh/') &&
+                        !config.url.includes('/api/token/login/')
                     ) {
-                        originalRequest._retry = true;
+                        config._retry = true;
 
                         try {
-                            // Try to refresh token
                             await axios.post(this.apiBaseUrl + '/api/token/refresh/', null, {
-                                withCredentials: true
+                                withCredentials: true,
                             });
 
-                            // Retry the original request
-                            originalRequest.withCredentials = true;
-                            return axios(originalRequest);
-                        } catch (refreshError) {
-                            console.error('Obnovení tokenu selhalo', refreshError);
-
-                            // Redirect to login
-
-                            return Promise.reject(refreshError);
+                            config.withCredentials = true;
+                            return axios(config);
+                        } catch {
+                            try {
+                                await axios.post(this.apiBaseUrl + '/api/logout/', null, {
+                                    withCredentials: true,
+                                });
+                            } catch (logoutError) {
+                                // ignoruj chybu při logoutu
+                            }
+                            // Redirect to login if refresh fails
+                            window.location.href = '/login/';
+                            return Promise.reject(error);
                         }
                     }
 
@@ -71,7 +73,5 @@ export const useMainStore = defineStore('main', {
                 }
             );
         }
-
-
     }
 });

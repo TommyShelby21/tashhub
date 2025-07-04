@@ -54,6 +54,9 @@ function loginUser() {
     },
     ).then(response => {
         window.location.href = '/';
+    }).catch(err => {
+        alert('Login failed, please check your credentials')
+        console.error(err)
     })
 }
 

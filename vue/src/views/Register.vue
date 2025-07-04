@@ -38,18 +38,16 @@ import { ref } from 'vue';
 import { useMainStore } from '../store'
 
 const mainStore = useMainStore()
+
 const email = ref('');
 const username = ref('');
 const password = ref('');
-
 
 function registerUser() {
     mainStore.api.post('/api/register/', {
         email: email.value,
         username: username.value,
         password: password.value,
-    }).then(response => {
-
     })
 }
 
