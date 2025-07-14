@@ -32,7 +32,7 @@ const routes = [
         meta: { navbar: true }
     },
         {
-        path: '/task-organizator',
+        path: '/team/:id/task-organizator',
         name: 'TaskOrganizator',
         component: TaskOrganizator,
         meta: { navbar: true }

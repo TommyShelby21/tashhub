@@ -41,7 +41,7 @@ def login(request):
             httponly=True,
             secure=False,         # nastav na True, pokud máš HTTPS (doporučeno)
             samesite='Lax',
-            max_age=1 * 60      # 1 minut platnost tokenu
+            max_age=15 * 60      # 1 minut platnost tokenu
         )
         response.set_cookie(
             key='refresh_token',
@@ -63,11 +63,22 @@ def login(request):
 @permission_classes([AllowAny])
 def logout(request):
     response = Response()
-    response.delete_cookie('access_token')
-    response.delete_cookie('refresh_token')
+
+    response.delete_cookie(
+        key='access_token',
+        path='/',
+        domain=None,
+    )
+    response.delete_cookie(
+        key='refresh_token',
+        path='/',
+        domain=None,
+    )
+
     response.data = {
         'message': 'Logout successful',
     }
+
     return response
 
 

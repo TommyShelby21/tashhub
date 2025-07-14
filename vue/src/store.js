@@ -7,6 +7,7 @@ export const useMainStore = defineStore('main', {
         apiBaseUrl: 'http://localhost:1000',
         withCredentials: true,
         user: null,
+        router: null,
     }),
     getters: {
         api: (state) => ({
@@ -34,44 +35,65 @@ export const useMainStore = defineStore('main', {
         })
     },
     actions: {
+        setRouter(router) {
+            this.router = router;
+        },
         setupInterceptors() {
             axios.interceptors.response.use(
                 response => response,
                 async error => {
-                    const { config, response } = error;
+                    const { response, config } = error;
 
-                    if (
-                        response?.status === 401 &&
-                        !config._retry &&
-                        !config.url.includes('/api/token/refresh/') &&
-                        !config.url.includes('/api/token/login/')
-                    ) {
+                    // If no response or not 401, reject immediately
+                    if (!response || response.status !== 401) {
+                        return Promise.reject(error);
+                    }
+
+                    // Avoid infinite loop: do NOT intercept refresh requests
+                    if (config.url.includes('/api/token/refresh/')) {
+                        console.warn("Token refresh failed, redirecting to login...");
+                        if (this.router) {
+                            this.router.push('/login');
+                        } else {
+                            window.location.href = '/login';
+                        }
+                        return Promise.reject(error);
+                    }
+
+                    // Prevent retry loops
+                    if (!config._retry) {
                         config._retry = true;
-
                         try {
-                            await axios.post(this.apiBaseUrl + '/api/token/refresh/', null, {
-                                withCredentials: true,
-                            });
+                            // Refresh the token
+                            const refreshResponse = await axios.post(
+                                this.apiBaseUrl + '/api/token/refresh/',
+                                null,
+                                { withCredentials: true }
+                            );
 
+                            // OPTIONAL: set token if you store access tokens manually
+                            // axios.defaults.headers.common['Authorization'] = `Bearer ${refreshResponse.data.access}`;
+
+                            // Retry the original request
                             config.withCredentials = true;
                             return axios(config);
-                        } catch {
-                            try {
-                                await axios.post(this.apiBaseUrl + '/api/logout/', null, {
-                                    withCredentials: true,
-                                });
-                            } catch (logoutError) {
-                                // ignoruj chybu při logoutu
+                        } catch (refreshError) {
+                            console.error("Token refresh failed", refreshError);
+                            if (this.router) {
+                                this.router.push('/login');
+                            } else {
+                                window.location.href = '/login';
                             }
-                            // Redirect to login if refresh fails
-                            window.location.href = '/login/';
-                            return Promise.reject(error);
+                            return Promise.reject(refreshError);
                         }
                     }
 
+                    // Already retried once — don't try again
                     return Promise.reject(error);
                 }
             );
         }
+
+
     }
 });
