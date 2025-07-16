@@ -8,6 +8,7 @@ export const useMainStore = defineStore('main', {
         withCredentials: true,
         user: null,
         router: null,
+        selectedTeam: null
     }),
     getters: {
         api: (state) => ({
@@ -37,6 +38,12 @@ export const useMainStore = defineStore('main', {
     actions: {
         setRouter(router) {
             this.router = router;
+        },
+        setUser(user) {
+            this.user = user;
+        },
+        setSelectedTeam(team) {
+            this.selectedTeam = team
         },
         setupInterceptors() {
             axios.interceptors.response.use(
@@ -71,9 +78,6 @@ export const useMainStore = defineStore('main', {
                                 { withCredentials: true }
                             );
 
-                            // OPTIONAL: set token if you store access tokens manually
-                            // axios.defaults.headers.common['Authorization'] = `Bearer ${refreshResponse.data.access}`;
-
                             // Retry the original request
                             config.withCredentials = true;
                             return axios(config);
@@ -93,7 +97,5 @@ export const useMainStore = defineStore('main', {
                 }
             );
         }
-
-
     }
 });

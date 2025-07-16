@@ -12,7 +12,10 @@
 
             <div class="flex justify-end mt-4">
                 <button @click="$emit('close')" class="btn px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Close
+                    Zavřít
+                </button>
+                <button @click="$emit('submit')" class="btn btn_primary px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    Potvrdit
                 </button>
             </div>
         </div>

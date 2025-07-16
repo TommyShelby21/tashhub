@@ -53,6 +53,7 @@ function loginUser() {
         password: password.value,
     },
     ).then(response => {
+        mainStore.setUser(response.data.user);
         window.location.href = '/';
     }).catch(err => {
         console.error(err)

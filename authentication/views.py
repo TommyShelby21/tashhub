@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer
+from system.serializers import UserSerializer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,19 +30,21 @@ def register(request):
 def login(request):
     password = request.data.get('password')
     username = request.data.get('username')
+    print("asd")
 
     user = authenticate(username=username, password=password)
     if user is not None:
+        response = Response()
+
         refresh = RefreshToken.for_user(user)
 
-        response = Response()
         response.set_cookie(
             key='access_token',
             value=str(refresh.access_token),
             httponly=True,
             secure=False,         # nastav na True, pokud máš HTTPS (doporučeno)
             samesite='Lax',
-            max_age=15 * 60      # 1 minut platnost tokenu
+            max_age=15 * 60      # 15 minut platnost tokenu
         )
         response.set_cookie(
             key='refresh_token',
@@ -52,6 +55,7 @@ def login(request):
             max_age=7 * 24 * 60 * 60    # 7 dní platnost refresh tokenu
         )
         response.data = {
+            'user': UserSerializer(user).data,
             'message': 'Login successful',
         }
         return response
@@ -83,8 +87,11 @@ def logout(request):
 
 
 @api_view(['POST'])
+@authentication_classes([])  # vypneme autentizaci
 @permission_classes([AllowAny])
 def refresh_token(request):
+    print("refresh token request")
+
     refresh_token = request.COOKIES.get('refresh_token')
     if not refresh_token:
         return Response({'error': 'No refresh token'}, status=400)

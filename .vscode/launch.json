@@ -30,7 +30,7 @@
       "program": "${workspaceFolder}/manage.py",
       "args": [
         "runserver",
-        "0.0.0.0:1000"
+        "localhost:1000"
       ],
       "django": true,
       "console": "integratedTerminal",
