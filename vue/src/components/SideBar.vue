@@ -23,8 +23,8 @@
                         <span class="ms-3">Můj účet</span>
                     </router-link>
                 </li>
-                <li>
-                    <router-link :to="{ path: '/team/1/task-organizator' }"
+                <li v-if="selectedTeam">
+                    <router-link :to="{ path: `/team/${selectedTeam}/task-organizator` }"
                         class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                         <span class="ms-3">Organizace úkolů</span>
                     </router-link>

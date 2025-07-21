@@ -9,7 +9,7 @@ from system.models import Team, Task, TeamMember, AssignedTask, UserProfile
 @permission_classes([IsAuthenticated])
 def profile(request):
     user_serializer = UserSerializer(request.user)
-
+    print("asd")
     user_profile = UserProfile.objects.get(user=request.user)
     user_profile_serializer = UserProfileSerializer(user_profile)
 
