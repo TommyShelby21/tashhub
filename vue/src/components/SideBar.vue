@@ -29,6 +29,12 @@
                         <span class="ms-3">Organizace úkolů</span>
                     </router-link>
                 </li>
+                <li>
+                    <router-link :to="{ path: '/add-team' }"
+                        class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        <span class="ms-3">Vytvořit nový tým</span>
+                    </router-link>
+                </li>
                 <li v-if="sidebarOpened">
                     <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 text-white rounded-4xl">
                         Zavřít sidebar

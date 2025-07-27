@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, TokenErro
 from django.conf import settings
 
 @api_view(['POST'])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
@@ -26,6 +27,7 @@ def register(request):
 
 
 @api_view(['POST'])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def login(request):
     password = request.data.get('password')
@@ -64,6 +66,7 @@ def login(request):
 
 
 @api_view(['POST'])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def logout(request):
     response = Response()
@@ -113,5 +116,3 @@ def refresh_token(request):
 
     except TokenError as e:
         return Response({'error': 'Invalid refresh token'}, status=401)
-
-

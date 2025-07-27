@@ -2,10 +2,14 @@
     <div class="flex items-center gap-5 mb-4">
         <div class="flex items-center gap-2">
             <span>Aktualni den mesic:</span>
-            <span>{{ currentDate }}</span>
+            <span>{{ formattedCurrentDate }}</span>
         </div>
-        <div>
-            <button class="btn btn_main">prepinac tydnu</button>
+        <div class="gap-2 flex">
+            <button class="btn btn_main" @click="previousWeek">
+                <span>
+                    < </span>
+            </button>
+            <button class="btn btn_main" @click="nextWeek">></button>
         </div>
     </div>
     <div class="h-[600px] border border-gray-300 overflow-x-auto overflow-y-auto w-9/10 mx-auto">
@@ -61,16 +65,11 @@ const props = defineProps({
 })
 
 // Update current date
-const currentDate = ref('')
+const currentDate = ref(new Date())
 const assignedTasks = ref([])
 const openedTaskDetail = ref(false)
 const openedTask = ref({})
 
-onMounted(() => {
-    updateCurrentDate()
-    setInterval(() => updateCurrentDate(), 1000)
-
-})
 watch(
     () => mainStore.selectedTeam,
     (newTeam) => {
@@ -89,17 +88,28 @@ function loadData() {
     }
 }
 
-function updateCurrentDate() {
-    const now = new Date()
-    const formatter = new Intl.DateTimeFormat('cs-CZ', {
+const formattedCurrentDate = computed(() => {
+    return currentDate.value.toLocaleDateString('cs-CZ', {
         weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
     })
-    currentDate.value = formatter.format(now)
+})
+
+
+function nextWeek() {
+    const newDate = new Date(currentDate.value)
+    newDate.setDate(newDate.getDate() + 7)
+    currentDate.value = newDate
+    loadData()
+}
+
+function previousWeek() {
+    const newDate = new Date(currentDate.value)
+    newDate.setDate(newDate.getDate() - 7)
+    currentDate.value = newDate
+    loadData()
 }
 
 // Get the Monday of the current week
@@ -111,7 +121,7 @@ function getStartOfWeek(date) {
 }
 
 const weekDays = computed(() => {
-    const start = getStartOfWeek(new Date())
+    const start = getStartOfWeek(currentDate.value)
     const days = []
 
     for (let i = 0; i < 7; i++) {
@@ -149,14 +159,23 @@ function onDrop(day, hour) {
     // clear the draggedTaskId
     emit('clearDraggedTaskId');
 }
-function tasksForCell(day, hour) {
-    return assignedTasks.value.filter(task => {
-        const taskDate = new Date(task.datetime);
-        const taskDay = taskDate.getUTCDay() === 0 ? 7 : taskDate.getUTCDay(); // Sunday = 7
-        const taskHour = taskDate.getUTCHours().toString().padStart(2, '0') + ':00'; // "HH:00" in UTC
 
-        return taskDay === day && taskHour === hour;
-    });
+function tasksForCell(day, hour) {
+    const startOfWeek = getStartOfWeek(currentDate.value)
+    const endOfWeek = new Date(startOfWeek)
+    endOfWeek.setDate(endOfWeek.getDate() + 6)
+
+    return assignedTasks.value.filter(task => {
+        const taskDate = new Date(task.datetime)
+
+        // pouze pokud je task v aktuálním týdnu
+        if (taskDate < startOfWeek || taskDate > endOfWeek) return false
+
+        const taskDay = taskDate.getUTCDay() === 0 ? 7 : taskDate.getUTCDay() // Sunday = 7
+        const taskHour = taskDate.getUTCHours().toString().padStart(2, '0') + ':00'
+
+        return taskDay === day && taskHour === hour
+    })
 }
 
 const saveTaskChanges = (day, hour, taskId) => {
@@ -179,6 +198,7 @@ const openTaskDetail = (taskId) => {
     openedTask.value = assignedTasks.value.find(task => task.id === taskId)
     openedTaskDetail.value = true
 }
+
 
 </script>
 <style lang="">

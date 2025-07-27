@@ -1,6 +1,6 @@
 <template>
   <SideBar v-if="showNavbar" />
-  <div class="p-2 sm:ml-64">
+  <div class="p-3 sm:ml-64">
     <router-view />
   </div>
 </template>

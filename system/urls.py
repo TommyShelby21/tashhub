@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from system.views import profile, team_tasks, add_team_task, team_tasks_update, team_assigned_tasks, available_user_teams, set_user_profile
+from system.views import profile, team_tasks, add_team_task, team_tasks_update, team_assigned_tasks, available_user_teams, set_user_profile, users
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('users/', users, name='users'),
     path('profile/', profile, name='profile'),
     path('profile/set_user_profile/', set_user_profile, name='set_user_profile'),
     path('available_user_teams/', available_user_teams, name='available_user_teams'),

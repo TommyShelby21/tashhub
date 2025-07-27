@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from system.serializers import UserSerializer, TaskSerializer, AssignedTaskSerializer, TeamSerializer, UserProfileSerializer
 from system.models import Team, Task, TeamMember, AssignedTask, UserProfile
+from django.contrib.auth.models import User
 
 
 @api_view(['GET'])
@@ -14,6 +15,16 @@ def profile(request):
     user_profile_serializer = UserProfileSerializer(user_profile)
 
     return Response({'user': user_serializer.data, 'user_profile': user_profile_serializer.data}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def users(request):
+    users = User.objects.all()
+
+    serializer = UserSerializer(users, many=True)
+
+    return Response({'items': serializer.data}, status=200)
 
 
 @api_view(["GET"])

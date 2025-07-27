@@ -5,7 +5,6 @@ import axios from 'axios'
 export const useMainStore = defineStore('main', {
     state: () => ({
         apiBaseUrl: 'http://localhost:1000',
-        withCredentials: true,
         user: null,
         router: null,
         selectedTeam: null
@@ -50,19 +49,13 @@ export const useMainStore = defineStore('main', {
                 response => response,
                 async error => {
                     const { response, config } = error;
-
-                    // If no response or not 401, reject immediately
-                    if (!response || response.status !== 401) {
-                        return Promise.reject(error);
-                    }
+                    config._retry = false;
 
                     // Avoid infinite loop: do NOT intercept refresh requests
                     if (config.url.includes('/api/token/refresh/')) {
                         console.warn("Token refresh failed, redirecting to login...");
                         if (this.router) {
                             this.router.push('/login');
-                        } else {
-                            window.location.href = '/login';
                         }
                         return Promise.reject(error);
                     }
@@ -70,26 +63,12 @@ export const useMainStore = defineStore('main', {
                     // Prevent retry loops
                     if (!config._retry) {
                         config._retry = true;
-                        try {
-                            // Refresh the token
-                            const refreshResponse = await axios.post(
-                                this.apiBaseUrl + '/api/token/refresh/',
-                                null,
-                                { withCredentials: true }
-                            );
-
-                            // Retry the original request
-                            config.withCredentials = true;
-                            return axios(config);
-                        } catch (refreshError) {
-                            console.error("Token refresh failed", refreshError);
-                            if (this.router) {
-                                this.router.push('/login');
-                            } else {
-                                window.location.href = '/login';
-                            }
-                            return Promise.reject(refreshError);
-                        }
+                        // Refresh the token
+                        const refreshResponse = await axios.post(
+                            this.apiBaseUrl + '/api/token/refresh/',
+                            null,
+                            { withCredentials: true }
+                        );
                     }
 
                     // Already retried once — don't try again
