@@ -46,7 +46,7 @@ def login(request):
             httponly=True,
             secure=False,         # nastav na True, pokud máš HTTPS (doporučeno)
             samesite='Lax',
-            max_age=15 * 60      # 15 minut platnost tokenu
+            max_age=1 * 60      # 15 minut platnost tokenu
         )
         response.set_cookie(
             key='refresh_token',
@@ -110,7 +110,7 @@ def refresh_token(request):
             httponly=True,
             secure=False,
             samesite='Lax',
-            max_age=15 * 60
+            max_age=1 * 60
         )
         return response
 

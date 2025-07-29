@@ -29,7 +29,6 @@
                     </div>
                 </div>
             </template>
-
         </Modal>
         <div class="flex gap-5 mt-3">
             <div v-for="task in teamTasks" :key="task.id"
@@ -40,9 +39,25 @@
             </div>
         </div>
         <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'">
+            <template #next-header>
+                <div class="flex cursor-pointer btn btn_main justify-center items-center">
+                    <IconPlus stroke={2} class="me-2" />
+                    <span>Přiřadit členy</span>
+                </div>
+            </template>
             <template #modal-content>
-                <div>
-                    {{ openedTask }}
+                <div class="grid">
+                    <div v-if="openedTask.team_members.length > 0" v-for="team_member in openedTask.team_members"
+                        :key="team_member.id" class="flex">
+                        <IconUserCircle stroke={2} />
+                    </div>
+                    <div v-else>
+                        <span class="font-bold">Nikdo nepřiřazen</span>
+                    </div>
+                    <span class="font-semibold mt-4" style="font-size: 20px;">{{ openedTask.name }}</span>
+                    <p>
+                        {{ openedTask.description }}
+                    </p>
                 </div>
             </template>
         </Modal>
@@ -62,46 +77,58 @@ import { onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import Modal from '../components/Modal.vue';
 import ActualTasksTable from '../components/ActualTasksTable.vue';
+import { IconUserCircle } from '@tabler/icons-vue';
+import { IconPlus } from '@tabler/icons-vue';
 
 const mainStore = useMainStore();
 const route = useRoute();
-const teamTasks = ref([])
-const openedTaskModal = ref(false)
-const draggedTaskId = ref(null);
-const openedTaskDetail = ref(false)
-const openedTask = ref({})
-const addTask = ref({
-    name: '',
-    description: '',
-    users: []
-})
 
 onMounted(() => {
     loadData()
 })
 
+// Load Data
+const teamTasks = ref([])
 function loadData() {
     mainStore.api.get(`/team/${route.params.id}/tasks`).then((response) => {
         teamTasks.value = response.data.tasks;
     });
 }
+
+//
+const draggedTaskId = ref(null);
 function onDragStart(taskId) {
     draggedTaskId.value = taskId;
 }
+
+// Open Task
+const openedTaskModal = ref(false)
 function openTaskModal() {
     openedTaskModal.value = true
 }
 
+const openedTaskDetail = ref(false)
+const openedTask = ref({})
+const openTaskDetail = (taskId) => {
+    openedTask.value = teamTasks.value.find(task => task.id === taskId)
+    openedTaskDetail.value = true
+}
+
+// Add Task
+const addTask = ref({
+    name: '',
+    description: '',
+    users: []
+})
 function submitNewTask() {
     mainStore.api.post(`/team/${route.params.id}/tasks/add/`, addTask.value).then((response) => {
         loadData()
         openedTaskModal.value = false
     })
 }
-const openTaskDetail = (taskId) => {
-    openedTask.value = teamTasks.value.find(task => task.id === taskId)
-    openedTaskDetail.value = true
-}
+
+
+
 
 </script>
 <style lang="scss" scoped></style>

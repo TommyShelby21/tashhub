@@ -101,6 +101,27 @@ def available_user_teams(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+def add_team(request):
+    user = request.user
+    user_instance = User.objects.get(id=user.id)
+
+    name = request.data.get('name')
+    users = request.data.get('users')
+    if not users or not name:
+        return Response({'error': 'Users and name required'}, status=400)
+
+    team = Team.objects.create(name=name)
+    leader = TeamMember.objects.create(user=user_instance, leader=True, team=team)
+
+    for member in users:
+        member = User.objects.get(id=member.get('id'))
+        TeamMember.objects.create(user=member, leader=False, team=team)
+
+    return Response({'message': 'Team created successfully'}, status=201)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def set_user_profile(request):
     user = request.user
 

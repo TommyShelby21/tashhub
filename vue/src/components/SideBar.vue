@@ -68,6 +68,7 @@ const selectedTeam = ref(null);
 
 onMounted(() => {
     loadData();
+    selectedTeam.value = mainStore.selectedTeam
 });
 
 const toggleSidebar = () => {
@@ -84,11 +85,6 @@ const logout = () => {
 const loadData = () => {
     mainStore.api.get('/available_user_teams/').then((response) => {
         availableTeams.value = response.data.teams;
-    });
-    mainStore.api.get('/profile/').then((response) => {
-        selectedTeam.value = response.data.user_profile.selected_team;
-        mainStore.setSelectedTeam(selectedTeam.value);
-        console.log(mainStore.selectedTeam)
     });
 }
 

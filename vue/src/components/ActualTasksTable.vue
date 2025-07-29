@@ -1,8 +1,7 @@
 <template>
-    <div class="flex items-center gap-5 mb-4">
+    <div class="flex items-center gap-5 mb-4 mt-10">
         <div class="flex items-center gap-2">
-            <span>Aktualni den mesic:</span>
-            <span>{{ formattedCurrentDate }}</span>
+            <span class="font-semibold" style="font-size: 16px;">{{ formattedCurrentDate }}</span>
         </div>
         <div class="gap-2 flex">
             <button class="btn btn_main" @click="previousWeek">
@@ -12,7 +11,7 @@
             <button class="btn btn_main" @click="nextWeek">></button>
         </div>
     </div>
-    <div class="h-[600px] border border-gray-300 overflow-x-auto overflow-y-auto w-9/10 mx-auto">
+    <div class="h-[600px] border border-gray-300 overflow-x-auto overflow-y-auto">
         <table class="table-fixed w-full border-collapse">
             <thead class="bg-gray-200 sticky top-0 z-10">
                 <tr>
@@ -38,8 +37,11 @@
                 </tr>
                 <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'">
                     <template #modal-content>
-                        <div>
-                            {{ openedTask }}
+                        <div class="flex flex-col">
+                            <span class="font-semibold" style="font-size: 20px;">{{ openedTask.task.name }}</span>
+                            <p>
+                                {{ openedTask.task.description }}
+                            </p>
                         </div>
                     </template>
                 </Modal>
