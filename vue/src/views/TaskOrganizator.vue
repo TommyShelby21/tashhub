@@ -7,6 +7,7 @@
             <h2 class="me-5" style="font-size: 20px; font-weight: 500;">Aktuální úkoly:</h2>
             <button class="btn btn_main" @click="openTaskModal">Přidat úkol</button>
         </div>
+        <!-- Add task Modal -->
         <Modal v-if="openedTaskModal" @close="openedTaskModal = false" @submit="submitNewTask" :title="'Přidat úkol'">
             <template #modal-content>
                 <div class="row">
@@ -38,20 +39,35 @@
                 <IconInfoCircleFilled class="cursor-pointer" @click="openTaskDetail(task.id)" />
             </div>
         </div>
-        <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'">
+        <!-- Assign members to task Modal -->
+        <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'"
+            @submit="assignMembers()">
             <template #next-header>
-                <div class="flex cursor-pointer btn btn_main justify-center items-center">
+                <div class="flex cursor-pointer btn btn_main justify-center items-center"
+                    @click="addingMembers = !addingMembers">
                     <IconPlus stroke={2} class="me-2" />
                     <span>Přiřadit členy</span>
                 </div>
             </template>
             <template #modal-content>
                 <div class="grid">
-                    <div v-if="openedTask.team_members.length > 0" v-for="team_member in openedTask.team_members"
-                        :key="team_member.id" class="flex">
-                        <IconUserCircle stroke={2} />
+                    <div class="grid grid-cols-2">
+                        <div v-if="openedTask.team_members.length > 0" v-for="team_member in openedTask.team_members"
+                            :key="team_member.id" class="col-span-1">
+                            <IconUserCircle stroke={2} style="width: 40px; height: 40px;" />
+                        </div>
+                        <div v-else class="col-span-1">
+                            <!-- empty div -->
+                        </div>
+                        <div v-if="addingMembers" class="mb-4 w-full ms-auto grid-cols-1">
+                            <multiselect v-model="assignedTeamMembers" :options="processedTeamMembers" :multiple="true"
+                                :close-on-select="false" :preserve-search="true" track-by="id" label="label"
+                                placeholder="Vyberte členy týmu" select-label="Vybrat" deselect-label="Odstranit"
+                                class="custom-multiselect">
+                            </multiselect>
+                        </div>
                     </div>
-                    <div v-else>
+                    <div v-if="openedTask.team_members.length <= 0" class="mt-4">
                         <span class="font-bold">Nikdo nepřiřazen</span>
                     </div>
                     <span class="font-semibold mt-4" style="font-size: 20px;">{{ openedTask.name }}</span>
@@ -71,7 +87,7 @@
 </template>
 <script setup>
 import { IconInfoCircleFilled } from '@tabler/icons-vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useMainStore } from '../store';
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router';
@@ -79,6 +95,7 @@ import Modal from '../components/Modal.vue';
 import ActualTasksTable from '../components/ActualTasksTable.vue';
 import { IconUserCircle } from '@tabler/icons-vue';
 import { IconPlus } from '@tabler/icons-vue';
+import Multiselect from 'vue-multiselect'
 
 const mainStore = useMainStore();
 const route = useRoute();
@@ -127,7 +144,30 @@ function submitNewTask() {
     })
 }
 
+// Load Team Members
+const teamMembers = ref([])
+onMounted(() => {
+    mainStore.api.get(`/team/${route.params.id}/members`).then((response) => {
+        teamMembers.value = response.data.members;
+    });
+})
+const processedTeamMembers = computed(() => {
+    return teamMembers.value.map(member => ({
+        ...member,
+        label: member.user.username
+    }))
+})
 
+// Add Members to Task
+const addingMembers = ref(false)
+const assignedTeamMembers = ref([])
+const assignMembers = () => {
+    let payload = {
+        taskId: openedTask.value.id,
+        teamMembers: assignedTeamMembers.value.map(member => member.id)
+    }
+    mainStore.api.post(`/team/${route.params.id}/tasks/assign`, payload)
+}
 
 
 </script>

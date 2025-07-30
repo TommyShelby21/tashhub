@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from system.serializers import UserSerializer, TaskSerializer, AssignedTaskSerializer, TeamSerializer, UserProfileSerializer
+from system.serializers import UserSerializer, TaskSerializer, AssignedTaskSerializer, TeamSerializer, UserProfileSerializer, TeamMemberSerializer
 from system.models import Team, Task, TeamMember, AssignedTask, UserProfile
 from django.contrib.auth.models import User
 
@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 @permission_classes([IsAuthenticated])
 def profile(request):
     user_serializer = UserSerializer(request.user)
-    print("asd")
     user_profile = UserProfile.objects.get(user=request.user)
     user_profile_serializer = UserProfileSerializer(user_profile)
 
@@ -37,6 +36,18 @@ def team_tasks(request, team_id):
     serializer = TaskSerializer(tasks, many=True)
 
     return Response({'tasks': serializer.data}, status=200)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def team_members(request, team_id):
+    team = Team.objects.get(id=team_id)
+
+    members = TeamMember.objects.filter(team=team)
+
+    serializer = TeamMemberSerializer(members, many=True)
+
+    return Response({'members': serializer.data}, status=200)
 
 
 @api_view(["POST"])
@@ -73,6 +84,23 @@ def team_tasks_update(request, team_id):
     assigned_task, created = AssignedTask.objects.update_or_create(task=task, team=team, defaults={'datetime': datetime})
 
     return Response({'message': 'Task updated successfully'}, status=201)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def assign_task_to_members(request, team_id):
+    team = Team.objects.get(id=team_id)
+
+    task_id = request.data.get('taskId')
+    task = Task.objects.get(id=task_id)
+
+    members_ids = request.data.get('teamMembers', [])
+
+    assigned_task, created = AssignedTask.objects.get_or_create(task=task, team=team)
+
+    task.team_members.set(members_ids)
+
+    return Response({'message': 'Task assigned successfully'}, status=201)
 
 
 @api_view(["GET"])

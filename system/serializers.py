@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from system.models import Task, AssignedTask, Team, UserProfile
+from system.models import Task, AssignedTask, Team, UserProfile, TeamMember
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,6 +23,13 @@ class TaskSerializer(serializers.ModelSerializer):
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
+        fields = '__all__'
+
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False)
+    class Meta:
+        model = TeamMember
         fields = '__all__'
 
 

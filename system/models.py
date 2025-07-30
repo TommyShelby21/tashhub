@@ -27,6 +27,5 @@ class Task(models.Model):
 class AssignedTask(models.Model):
     task = models.ForeignKey(Task, null=True, blank=True, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.CASCADE)
-    team_member = models.ForeignKey(TeamMember, null=True, blank=True, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     datetime = models.DateTimeField(auto_now_add=False)

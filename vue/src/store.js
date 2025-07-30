@@ -85,13 +85,13 @@ export const useMainStore = defineStore('main', {
                                 null,
                                 { withCredentials: true }
                             );
-
                             if (refreshResponse.status === 200) {
                                 // ⬇️ Načti profil a nastav do store
                                 const profileResponse = await axios.get(
                                     this.apiBaseUrl + '/profile/',
                                     { withCredentials: true }
                                 );
+                                console.log("updated user, team")
 
                                 this.setUser(profileResponse.data.user);
                                 this.setSelectedTeam(profileResponse.data.user_profile.selected_team);
