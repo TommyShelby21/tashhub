@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export const useMainStore = defineStore('main', {
     state: () => ({
-        apiBaseUrl: 'http://localhost:1000',
+        apiBaseUrl: 'http://localhost:5001',
         user: null,
         router: null,
         selectedTeam: null

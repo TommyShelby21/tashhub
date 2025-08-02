@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "compounds": [
     {
-      "name": "Run Django + Vue",
+      "name": "Run Django + Vue (WSL)",
       "configurations": [
-        "Django",
-        "Vue"
+        "Django (WSL)",
+        "Vue (WSL)"
       ]
     }
   ],
@@ -13,7 +13,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Vue",
+      "name": "Vue (WSL)",
       "cwd": "${workspaceFolder}/vue",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
@@ -26,15 +26,20 @@
     {
       "type": "python",
       "request": "launch",
-      "name": "Django",
+      "name": "Django (WSL)",
       "program": "${workspaceFolder}/manage.py",
       "args": [
         "runserver",
-        "localhost:1000"
+        "0.0.0.0:5001"
       ],
+      "python": "${workspaceFolder}/venv/bin/python",
       "django": true,
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "backend.settings",
+        "PYTHONPATH": "${workspaceFolder}"
+      }
     }
   ]
 }
