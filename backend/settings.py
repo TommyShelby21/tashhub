@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'taskhub_ntb',
+        'NAME': 'taskhub',
         'USER': 'tomas',
         'PASSWORD': 'tomas',
         'HOST': 'localhost',

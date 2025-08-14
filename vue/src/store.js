@@ -9,10 +9,16 @@ export const useMainStore = defineStore('main', {
         router: null,
         selectedTeam: null
     }),
-    persist: {
-        paths: ['user', 'selectedTeam'],
-        storage: sessionStorage
-    },
+    persist: [
+        {
+            paths: ['user'],
+            storage: sessionStorage
+        },
+        {
+            paths: ['selectedTeam'],
+            storage: localStorage
+        }
+    ],
     getters: {
         api: (state) => {
             return {
