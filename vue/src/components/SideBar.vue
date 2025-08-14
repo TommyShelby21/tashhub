@@ -9,41 +9,41 @@
         sidebarOpened ? 'translate-x-0' : '-translate-x-full',
         'sm:translate-x-0' // Always open on sm and up
     ]">
-        <div class="h-full px-3 py-4 overflow-y-auto bg-gray-100 flex flex-col flex-1">
+        <div class="h-full px-3 py-4 overflow-y-auto bg-gray-500 flex flex-col flex-1 sidebar">
             <ul class="flex flex-col flex-grow gap-2">
                 <li>
                     <router-link :to="{ path: '/' }"
-                        class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
                         <span class="ms-3">Nástěnka</span>
                     </router-link>
                 </li>
                 <li>
                     <router-link :to="{ path: '/profile' }"
-                        class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
                         <span class="ms-3">Můj účet</span>
                     </router-link>
                 </li>
                 <li v-if="selectedTeam">
                     <router-link :to="{ path: `/team/${selectedTeam}/task-organizator` }"
-                        class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
                         <span class="ms-3">Organizace úkolů</span>
                     </router-link>
                 </li>
                 <li>
                     <router-link :to="{ path: '/add-team' }"
-                        class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
                         <span class="ms-3">Vytvořit nový tým</span>
                     </router-link>
                 </li>
                 <li v-if="sidebarOpened">
-                    <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 text-white rounded-4xl">
+                    <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 text-gray-100 rounded-4xl">
                         Zavřít sidebar
                     </button>
                 </li>
             </ul>
             <div class="mb-10">
                 <label for="team" class="block text-gray-700 font-bold">Vyberte tým:</label>
-                <select class="border-1 border-gray-300 p-1 w-full mt-3" v-model="selectedTeam" @change="selectTeam()">
+                <select class="border-1 border-gray-900 text-gray-100 bg-gray-500 p-1 w-full mt-3" v-model="selectedTeam" @change="selectTeam()">
                     <option disabled></option>
                     <option v-for="team in availableTeams" :key="team.id" :value="team.id">{{ team.name }}</option>
                 </select>

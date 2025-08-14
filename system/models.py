@@ -28,4 +28,4 @@ class AssignedTask(models.Model):
     task = models.ForeignKey(Task, null=True, blank=True, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-    datetime = models.DateTimeField(auto_now_add=False)
+    datetime = models.DateTimeField(auto_now_add=False, null=True, blank=True)

@@ -18,11 +18,11 @@
                 <div class="flex flex-col mt-4">
                     <label for="password">Heslo:</label>
                     <input type="password" id="password" class="border border-gray-300 p-2 rounded mt-1"
-                        placeholder="Zadejte své heslo" v-model="password" />
+                        placeholder="Zadejte své heslo" v-model="password" @keyup.enter="loginUser" />
                 </div>
                 <div>
                     <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-3xl mt-4 w-full"
-                        @click="loginUser()">
+                        @click="loginUser()" >
                         Přihlásit se
                     </button>
                 </div>
