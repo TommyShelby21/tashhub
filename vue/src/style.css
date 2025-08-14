@@ -4,7 +4,17 @@
     --main-color: #000000;
     --secondary-color: #7C3AED;
     --white-color: #ffffff;
-    --text-color: #ffffff;
+    --text-color: oklch(96.7% 0.003 264.542);
+}
+
+input {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+option {
+    font-weight: 500;
+    color: var(--text-color);
 }
 
 h2 {

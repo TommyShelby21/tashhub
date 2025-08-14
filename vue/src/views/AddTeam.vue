@@ -19,7 +19,7 @@
                 </multiselect>
             </div>
             <div class="mt-5">
-                <button class="btn btn_secondary" @click="createTeam()">Vytvořit tým</button>
+                <button class="btn btn_main" @click="createTeam()">Vytvořit tým</button>
             </div>
         </div>
     </div>

@@ -4,10 +4,10 @@
         <div class="fixed inset-0 bg-black/40" @click="$emit('close')"></div>
 
         <!-- Modal Content -->
-        <div class="bg-white rounded-lg shadow-lg max-w-md p-6 z-10 transition transform duration-300 w-full grid grid-cols-12"
+        <div class="bg-gray-500 rounded-lg shadow-lg max-w-md p-6 z-10 transition transform duration-300 w-full grid grid-cols-12"
             style="max-width: 550px;">
             <div class="col-span-6">
-                <h2 class="text-xl font-bold" v-if="title">{{ title }}</h2>
+                <h2 class="text-xl font-bold text-gray-100" v-if="title">{{ title }}</h2>
             </div>
             <div class="col-span-6 flex">
                 <slot name="next-header"></slot>

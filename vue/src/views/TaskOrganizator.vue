@@ -12,7 +12,7 @@
             <template #modal-content>
                 <div class="row">
                     <div>
-                        <label for="name" class="">Název:</label>
+                        <label for="name" class="text-color">Název:</label>
                         <input type="text" placeholder="Zadejte název úkolu"
                             class="border-1 border-gray-300 p-1 w-full mt-1" v-model="addTask.name">
                     </div>
@@ -54,7 +54,13 @@
                     <div class="grid grid-cols-2">
                         <div v-if="openedTask.team_members.length > 0" v-for="team_member in openedTask.team_members"
                             :key="team_member.id" class="col-span-1">
-                            <IconUserCircle stroke={2} style="width: 40px; height: 40px;" />
+                            <IconUserCircle stroke={2} style="width: 40px; height: 40px;"
+                                data-tooltip-target="tooltip-default" />
+                            <div id="tooltip-default" role="tooltip"
+                                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+                                Tooltip content
+                                <div class="tooltip-arrow" data-popper-arrow></div>
+                            </div>
                         </div>
                         <div v-else class="col-span-1">
                             <!-- empty div -->
@@ -154,6 +160,7 @@ onMounted(() => {
 const processedTeamMembers = computed(() => {
     return teamMembers.value.map(member => ({
         ...member,
+        id: member.user.id,
         label: member.user.username
     }))
 })
@@ -166,7 +173,10 @@ const assignMembers = () => {
         taskId: openedTask.value.id,
         teamMembers: assignedTeamMembers.value.map(member => member.id)
     }
-    mainStore.api.post(`/team/${route.params.id}/tasks/assign`, payload)
+    mainStore.api.post(`/team/${route.params.id}/tasks/assign`, payload).then((response) => {
+        loadData()
+        addingMembers.value = false
+    })
 }
 
 
