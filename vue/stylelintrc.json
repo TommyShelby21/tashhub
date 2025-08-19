@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-prettier",
+    "stylelint-config-tailwindcss"
+  ],
+  "rules": {
+    "color-hex-case": "lower",
+    "block-no-empty": true
+  }
+}

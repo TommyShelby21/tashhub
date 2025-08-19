@@ -84,9 +84,13 @@ watch(
 
 function loadData() {
     if (mainStore.selectedTeam) {
-        mainStore.api.get(`/team/${mainStore.selectedTeam}/assigned_tasks`).then((response) => {
-            assignedTasks.value = response.data.assigned_tasks;
-        });
+        mainStore.api.get(`/team/${mainStore.selectedTeam}/assigned_tasks`)
+            .then((response) => {
+                assignedTasks.value = response.data.assigned_tasks;
+            })
+            .catch((error) => {
+                console.error("Chyba chycena", error);
+            })
     }
 }
 

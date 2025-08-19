@@ -57,68 +57,40 @@ export const useMainStore = defineStore('main', {
             this.selectedTeam = team
         },
         setupInterceptors() {
-            console.log("Setting up interceptors...");
+            let attempt = 0;
 
             axios.interceptors.response.use(
-                response => response,
-                async error => {
-                    const { response, config } = error;
+                (response) => {
+                    return response;
+                },
+                async (error) => {
+                    if (error.response.status === 401 || error.response.status === 403) {
+                        if (attempt < 1) {
+                            attempt++;
+                            await axios.post(this.apiBaseUrl + '/api/token/refresh/', null, {
+                                withCredentials: true
+                            })
+                                .then((response) => {
+                                    // GET USER
+                                    const profileResponse = axios.get(this.apiBaseUrl + '/api/user/', null, {
+                                        withCredentials: true
+                                    })
+                                        .then((response) => {
+                                            this.setUser(profileResponse.data.user);
+                                            this.setSelectedTeam(profileResponse.data.user_profile.selected_team);
+                                        });
 
-                    // Pokud chyba není 401 (Unauthorized), předej dál
-                    if (!response || response.status !== 401) {
-                        return Promise.reject(error);
-                    }
-
-                    // Zabráníme zacyklení při neúspěšném refreshi
-                    if (config.url.includes('/api/token/refresh/') && config._retry) {
-                        console.warn("Token refresh failed, redirecting to login...");
-                        if (this.router) {
-                            this.router.push('/login');
+                                    return axios(error.config)
+                                })
+                                .catch((error) => {
+                                    this.router.push({ name: 'Login' });
+                                });
                         }
-                        return Promise.reject(error);
+                        this.router.push({ name: 'Login' });
                     }
-
-                    // Pokud jsme ještě nerefreshovali, zkusíme to
-                    if (!config._retry) {
-                        config._retry = true;
-
-                        try {
-                            console.warn("Token expired, attempting refresh...");
-
-                            // Ověříme platnost refresh tokenu a získáme nový access token
-                            const refreshResponse = await axios.post(
-                                this.apiBaseUrl + '/api/token/refresh/',
-                                null,
-                                { withCredentials: true }
-                            );
-                            if (refreshResponse.status === 200) {
-                                // ⬇️ Načti profil a nastav do store
-                                const profileResponse = await axios.get(
-                                    this.apiBaseUrl + '/profile/',
-                                    { withCredentials: true }
-                                );
-                                console.log("updated user, team")
-
-                                this.setUser(profileResponse.data.user);
-                                this.setSelectedTeam(profileResponse.data.user_profile.selected_team);
-
-                                // ⬅️ Opětovně odešli původní request
-                                return axios(config);
-                            }
-
-                        } catch (refreshError) {
-                            console.error("Refresh failed:", refreshError);
-                            if (this.router) {
-                                this.router.push('/login');
-                            }
-                            return Promise.reject(refreshError);
-                        }
-                    }
-
-                    // Pokud refresh už proběhl a selhal, předej chybu dál
                     return Promise.reject(error);
                 }
-            );
+            )
         }
 
     }
