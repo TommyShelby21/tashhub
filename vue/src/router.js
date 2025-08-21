@@ -7,6 +7,7 @@ import Profile from './views/Profile.vue'
 import AddTeam from './views/AddTeam.vue'
 import TaskOrganizator from './views/TaskOrganizator.vue'
 
+
 const routes = [
     {
         path: '/',
@@ -51,3 +52,12 @@ export const router = createRouter({
     routes,
 })
 
+router.beforeEach((to, from, next) => {
+    const store = useMainStore()
+    if (to.fullPath === '/login' && store.isLoggedIn === true) {
+        next({ name: 'HomePage' })
+    }
+    else {
+        next()
+    }
+})

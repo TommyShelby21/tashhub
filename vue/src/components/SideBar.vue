@@ -9,7 +9,7 @@
         sidebarOpened ? 'translate-x-0' : '-translate-x-full',
         'sm:translate-x-0' // Always open on sm and up
     ]">
-        <div class="h-full px-3 py-4 overflow-y-auto bg-gray-500 flex flex-col flex-1 sidebar">
+        <div class="h-full px-3 py-4 overflow-y-auto  flex flex-col flex-1 sidebar" style="background-color: #7A7A73;">
             <ul class="flex flex-col flex-grow gap-2">
                 <li>
                     <router-link :to="{ path: '/' }"
@@ -43,7 +43,8 @@
             </ul>
             <div class="mb-10">
                 <label for="team" class="block text-gray-700 font-bold">Vyberte tým:</label>
-                <select class="border-1 border-gray-900 text-gray-100 bg-gray-500 p-1 w-full mt-3" v-model="selectedTeam" @change="selectTeam()">
+                <select class="border-1 border-gray-900 text-gray-100 bg-gray-500 p-1 w-full mt-3"
+                    v-model="selectedTeam" @change="selectTeam()">
                     <option disabled></option>
                     <option v-for="team in availableTeams" :key="team.id" :value="team.id">{{ team.name }}</option>
                 </select>
@@ -51,7 +52,7 @@
 
             <div class="mt-auto mb-10">
                 <a @click="logout"
-                    class="flex items-center p-2 bg-black text-white font-bold rounded-4xl hover:bg-gray-100 justify-center">
+                    class="flex items-center rounded-4xl justify-center btn btn_main">
                     <span class="flex-1 ms-3 whitespace-nowrap text-center">Odhlásit se</span>
                 </a>
             </div>

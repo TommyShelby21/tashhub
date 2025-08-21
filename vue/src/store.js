@@ -44,6 +44,9 @@ export const useMainStore = defineStore('main', {
                     });
                 }
             };
+        },
+        isLoggedIn: (state) => {
+            return state.user !== null
         }
     },
     actions: {

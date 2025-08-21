@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 :root {
-    --main-color: #000000;
+    --main-color: #333333;
     --secondary-color: #7C3AED;
     --white-color: #ffffff;
     --text-color: oklch(96.7% 0.003 264.542);
