@@ -26,6 +26,16 @@ def users(request):
     return Response({'items': serializer.data}, status=200)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_detail(request, user_id):
+    user = User.objects.get(id=user_id)
+
+    serializer = UserSerializer(user)
+
+    return Response({'user': serializer.data}, status=200)
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def team_tasks(request, team_id):

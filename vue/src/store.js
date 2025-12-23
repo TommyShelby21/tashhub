@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import axios from 'axios'
+import { router } from './router';
 
 
 export const useMainStore = defineStore('main', {
     state: () => ({
         apiBaseUrl: 'http://localhost:5001',
         user: null,
-        router: null,
         selectedTeam: null
     }),
     persist: [
@@ -50,9 +50,6 @@ export const useMainStore = defineStore('main', {
         }
     },
     actions: {
-        setRouter(router) {
-            this.router = router;
-        },
         setUser(user) {
             this.user = user;
         },
@@ -60,36 +57,32 @@ export const useMainStore = defineStore('main', {
             this.selectedTeam = team
         },
         setupInterceptors() {
-            let attempt = 0;
-
             axios.interceptors.response.use(
                 (response) => {
+                    console.log('response interceptor');
                     return response;
                 },
                 async (error) => {
+                    console.log('error interceptor');
                     if (error.response.status === 401 || error.response.status === 403) {
-                        if (attempt < 1) {
-                            attempt++;
+                        try {
+                            console.log('attempting token refresh');
                             await axios.post(this.apiBaseUrl + '/api/token/refresh/', null, {
                                 withCredentials: true
-                            })
-                                .then((response) => {
-                                    // GET USER
-                                    const profileResponse = axios.get(this.apiBaseUrl + '/api/user/', null, {
-                                        withCredentials: true
-                                    })
-                                        .then((response) => {
-                                            this.setUser(profileResponse.data.user);
-                                            this.setSelectedTeam(profileResponse.data.user_profile.selected_team);
-                                        });
+                            });
 
-                                    return axios(error.config)
-                                })
-                                .catch((error) => {
-                                    this.router.push({ name: 'Login' });
-                                });
+                            return axios(error.config);
                         }
-                        this.router.push({ name: 'Login' });
+                        catch (refreshError) {
+                            console.error('Token refresh failed:', refreshError);
+
+                            // Redirect to Login
+                            // We use .replace() so the user can't click "Back" to go to the protected page
+                            router.replace({ name: 'Login' });
+
+                            // Reject the promise
+                            throw refreshError;
+                        }
                     }
                     return Promise.reject(error);
                 }

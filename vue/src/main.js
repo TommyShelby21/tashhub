@@ -14,6 +14,5 @@ app.use(pinia)
 
 app.use(router)
 const mainStore = useMainStore()
-mainStore.setRouter(router)
 mainStore.setupInterceptors()
 app.mount('#app')

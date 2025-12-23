@@ -22,7 +22,7 @@
                 </div>
                 <div>
                     <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-3xl mt-4 w-full"
-                        @click="loginUser()" >
+                        @click="loginUser()">
                         Přihlásit se
                     </button>
                 </div>
@@ -43,7 +43,10 @@
 <script setup>
 import { ref } from 'vue';
 import { useMainStore } from '../store'
+import { useRouter } from 'vue-router';
+
 const mainStore = useMainStore()
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');
@@ -54,8 +57,13 @@ function loginUser() {
         password: password.value,
     },
     ).then(response => {
-        mainStore.setUser(response.data.user);
-        window.location.href = '/';
+        mainStore.api.get(`/user/${response.data.user.id}/`)
+            .then((response) => {
+                mainStore.setUser(response.data.user);
+            }).catch(err => {
+                console.error('Chyba při načítání profilu uživatele:', err);
+            });
+        router.push({ name: 'HomePage' });
     }).catch(err => {
         console.error(err)
     })

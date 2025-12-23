@@ -88,9 +88,6 @@ function loadData() {
             .then((response) => {
                 assignedTasks.value = response.data.assigned_tasks;
             })
-            .catch((error) => {
-                console.error("Chyba chycena", error);
-            })
     }
 }
 

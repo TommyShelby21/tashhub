@@ -32,7 +32,6 @@ def register(request):
 def login(request):
     password = request.data.get('password')
     username = request.data.get('username')
-    print("asd")
 
     user = authenticate(username=username, password=password)
     if user is not None:
@@ -60,6 +59,7 @@ def login(request):
             'user': UserSerializer(user).data,
             'message': 'Login successful',
         }
+        print(response.data)
         return response
 
     return Response({'error': 'Invalid credentials'}, status=401)

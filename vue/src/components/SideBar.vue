@@ -51,8 +51,7 @@
             </div>
 
             <div class="mt-auto mb-10">
-                <a @click="logout"
-                    class="flex items-center rounded-4xl justify-center btn btn_main">
+                <a @click="logout" class="flex items-center rounded-4xl justify-center btn btn_main">
                     <span class="flex-1 ms-3 whitespace-nowrap text-center">Odhlásit se</span>
                 </a>
             </div>
@@ -60,27 +59,30 @@
     </aside>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useMainStore } from '../store';
 
 const sidebarOpened = ref(false); // Controls visibility on mobile
 const availableTeams = ref([]);
 const selectedTeam = ref(null);
 
+const mainStore = useMainStore();
+
 onMounted(() => {
-    loadData();
     selectedTeam.value = mainStore.selectedTeam
 });
+
+
 
 const toggleSidebar = () => {
     sidebarOpened.value = !sidebarOpened.value;
 };
 
-const mainStore = useMainStore();
-
 const logout = () => {
     mainStore.api.post('/api/logout/', {}).then(() => {
         window.location.href = '/login';
+        mainStore.setUser(null);
+        mainStore.setSelectedTeam(null);
     });
 }
 const loadData = () => {
@@ -91,9 +93,17 @@ const loadData = () => {
 
 const selectTeam = () => {
     mainStore.api.post('/profile/set_user_profile/', { team: selectedTeam.value }).then((response) => {
+        console.log("Nastaven vybraný tým:", selectedTeam.value);
         mainStore.setSelectedTeam(selectedTeam.value);
     });
 }
+
+watch(() => mainStore.user, (newUser) => {
+    if (newUser) {
+        loadData();
+    }
+}, { immediate: true }
+);
 
 </script>
 
