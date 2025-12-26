@@ -1,33 +1,34 @@
 <template>
-    <div class="grid grid-cols-2 gap-6 h-[600px]">
-        <div class="picture col-span-2 md:col-span-1">
-            <div>
-                <h2>Profilový obrázek</h2>
-            </div>
-            <div class="border-2 border-gray-200 h-100 flex justify-center items-center">
-                <IconUserCircle stroke={2} class="h-80 w-100 md:w-80" />
-            </div>
-        </div>
-        <div class="info col-span-2 md:col-span-1 ">
-            <div>
-                <h2>Informace</h2>
-            </div>
-            <div class="grid mt-5" v-if="mainStore.user">
-                <div class="grid">
-                    <span class="font-semibold">Užitelské jméno:</span>
-                    <span>{{ mainStore.user.username }}</span>
-                </div>
-                <div class="grid mt-4">
-                    <span class="font-semibold">Email:</span>
-                    <span v-if="mainStore.user.email">{{ mainStore.user.email }}</span>
-                    <span>-</span>
-                </div>
+    <div class="profile grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- PROFILE PICTURE -->
+        <div class="flex flex-col items-center">
+            <h2 class="section-title">Profilový obrázek</h2>
+
+            <div class="profile-avatar mt-4 flex items-center justify-center">
+                <IconUserCircle class="h-48 w-48 opacity-80" />
             </div>
         </div>
+
+        <!-- USER INFO -->
+        <div>
+            <h2 class="section-title">Informace</h2>
+            <div v-if="mainStore.user" class="info-card mt-4 space-y-4">
+                <div>
+                    <span class="info-label">Uživatelské jméno</span>
+                    <p class="info-value">{{ mainStore.user.username }}</p>
+                </div>
+
+                <div v-if="mainStore.user.email">
+                    <span class="info-label">Email</span>
+                    <p class="info-value">{{ mainStore.user.email }}</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
+
 <script setup>
-import { onMounted } from 'vue'
 import { useMainStore } from '../store'
 import { IconUserCircle } from '@tabler/icons-vue';
 
@@ -35,6 +36,42 @@ const mainStore = useMainStore()
 
 
 </script>
-<style lang="">
+<style scoped>
+.profile {
+    padding: 2rem;
+    background-color: var(--main-color);
+    color: var(--white);
+    border-radius: 32px;
+    min-height: 500px;
+    max-height: fit-content;
+}
 
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    opacity: 0.95;
+}
+
+.profile-avatar {
+    width: 220px;
+    height: 220px;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+}
+
+.info-card {
+    background: var(--secondary-color);
+    padding: 1.25rem;
+    border-radius: 20px;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 600;
+}
 </style>

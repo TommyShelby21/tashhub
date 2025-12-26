@@ -1,9 +1,10 @@
 @import 'tailwindcss';
 
 :root {
-    --main-color: #333333;
-    --secondary-color: #7C3AED;
-    --white-color: #ffffff;
+    --main-color: #131313;
+    --black: #000000;
+    --secondary-color: rgba(255, 255, 255, 0.08);
+    --white: #ffffff;
     --text-color: oklch(96.7% 0.003 264.542);
 }
 
@@ -36,10 +37,14 @@ h2 {
 
 .btn_main {
     background-color: var(--main-color);
-    color: var(--white-color);
+    color: var(--white);
 }
 
 .btn_secondary {
     background-color: var(--secondary-color);
-    color: var(--white-color);
+    color: var(--white);
+}
+
+.sidebar {
+    background-color: var(--main-color);
 }

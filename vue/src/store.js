@@ -64,6 +64,12 @@ export const useMainStore = defineStore('main', {
                 },
                 async (error) => {
                     console.log('error interceptor');
+
+                    if (!error.response) {
+                        console.error('Network error or backend down');
+                        return Promise.reject(error);
+                    }
+
                     if (error.response.status === 401 || error.response.status === 403) {
                         try {
                             console.log('attempting token refresh');

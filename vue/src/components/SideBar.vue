@@ -9,50 +9,46 @@
         sidebarOpened ? 'translate-x-0' : '-translate-x-full',
         'sm:translate-x-0' // Always open on sm and up
     ]">
-        <div class="h-full px-3 py-4 overflow-y-auto  flex flex-col flex-1 sidebar" style="background-color: #7A7A73;">
+        <div class="h-full px-3 py-4 overflow-y-auto  flex flex-col flex-1 sidebar">
             <ul class="flex flex-col flex-grow gap-2">
                 <li>
-                    <router-link :to="{ path: '/' }"
-                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
+                    <router-link :to="{ path: '/' }" class="flex items-center p-2 rounded-lg link">
                         <span class="ms-3">Nástěnka</span>
                     </router-link>
                 </li>
                 <li>
-                    <router-link :to="{ path: '/profile' }"
-                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
+                    <router-link :to="{ path: '/profile' }" class="flex items-center p-2 rounded-lg link">
                         <span class="ms-3">Můj účet</span>
                     </router-link>
                 </li>
                 <li v-if="selectedTeam">
                     <router-link :to="{ path: `/team/${selectedTeam}/task-organizator` }"
-                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
+                        class="flex items-center p-2 rounded-lg link">
                         <span class="ms-3">Organizace úkolů</span>
                     </router-link>
                 </li>
                 <li>
-                    <router-link :to="{ path: '/add-team' }"
-                        class="flex items-center p-2 text-gray-100 rounded-lg hover:bg-gray-800">
+                    <router-link :to="{ path: '/add-team' }" class="flex items-center p-2 rounded-lg link">
                         <span class="ms-3">Vytvořit nový tým</span>
                     </router-link>
                 </li>
                 <li v-if="sidebarOpened">
-                    <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 text-gray-100 rounded-4xl">
+                    <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 rounded-4xl">
                         Zavřít sidebar
                     </button>
                 </li>
             </ul>
             <div class="mb-10">
-                <label for="team" class="block text-gray-700 font-bold">Vyberte tým:</label>
-                <select class="border-1 border-gray-900 text-gray-100 bg-gray-500 p-1 w-full mt-3"
-                    v-model="selectedTeam" @change="selectTeam()">
+                <label for="team" class="block">Vyberte tým:</label>
+                <select class="border-1 p-1 w-full mt-3" v-model="selectedTeam" @change="selectTeam()">
                     <option disabled></option>
                     <option v-for="team in availableTeams" :key="team.id" :value="team.id">{{ team.name }}</option>
                 </select>
             </div>
 
             <div class="mt-auto mb-10">
-                <a @click="logout" class="flex items-center rounded-4xl justify-center btn btn_main">
-                    <span class="flex-1 ms-3 whitespace-nowrap text-center">Odhlásit se</span>
+                <a @click="logout" class="flex items-center rounded-4xl justify-center btn btn_main logout">
+                    <span class="flex-1 ms-3 text-center">Odhlásit se</span>
                 </a>
             </div>
         </div>
@@ -71,8 +67,6 @@ const mainStore = useMainStore();
 onMounted(() => {
     selectedTeam.value = mainStore.selectedTeam
 });
-
-
 
 const toggleSidebar = () => {
     sidebarOpened.value = !sidebarOpened.value;
@@ -107,7 +101,24 @@ watch(() => mainStore.user, (newUser) => {
 
 </script>
 
-<style lang="" scoped>
+<style scoped>
+.sidebar {
+    color: var(--white);
+    font-weight: 500;
+}
 
+.link:hover {
+    color: var(--main-color);
+    background-color: var(--white);
+}
 
+select {
+    background-color: #3b3b3b;
+}
+
+.logout {
+    background-color: var(--white);
+    color: var(--black);
+    padding: 10px;
+}
 </style>
