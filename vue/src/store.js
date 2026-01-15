@@ -58,42 +58,31 @@ export const useMainStore = defineStore('main', {
         },
         setupInterceptors() {
             axios.interceptors.response.use(
-                (response) => {
-                    console.log('response interceptor');
-                    return response;
-                },
+                (response) => response,
                 async (error) => {
-                    console.log('error interceptor');
-
-                    if (!error.response) {
-                        console.error('Network error or backend down');
+                    if (error.config.url.includes('/api/token/refresh/')) {
+                        console.error('Refresh token is invalid, logging out...');
+                        this.setUser(null);
+                        router.replace({ name: 'Login' });
                         return Promise.reject(error);
                     }
 
-                    if (error.response.status === 401 || error.response.status === 403) {
+                    if ((error.response?.status === 401 || error.response?.status === 403) && !error.config._retry) {
+                        error.config._retry = true;
+
                         try {
-                            console.log('attempting token refresh');
                             await axios.post(this.apiBaseUrl + '/api/token/refresh/', null, {
                                 withCredentials: true
                             });
-
                             return axios(error.config);
-                        }
-                        catch (refreshError) {
-                            console.error('Token refresh failed:', refreshError);
-
-                            // Redirect to Login
-                            // We use .replace() so the user can't click "Back" to go to the protected page
-                            router.replace({ name: 'Login' });
-
-                            // Reject the promise
-                            throw refreshError;
+                        } catch (refreshError) {
+                            return Promise.reject(refreshError);
                         }
                     }
+
                     return Promise.reject(error);
                 }
-            )
+            );
         }
-
     }
 });

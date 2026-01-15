@@ -13,7 +13,7 @@ const routes = [
         path: '/',
         name: 'HomePage',
         component: HomePage,
-        meta: { navbar: true }
+        meta: { navbar: true, auth: true }
     },
     {
         path: '/login',
@@ -31,19 +31,19 @@ const routes = [
         path: '/profile',
         name: 'Profile',
         component: Profile,
-        meta: { navbar: true }
+        meta: { navbar: true, auth: true }
     },
     {
         path: '/team/:id/task-organizator',
         name: 'TaskOrganizator',
         component: TaskOrganizator,
-        meta: { navbar: true }
+        meta: { navbar: true, auth: true }
     },
     {
         path: '/add-team',
         name: 'AddTeam',
         component: AddTeam,
-        meta: { navbar: true }
+        meta: { navbar: true, auth: true }
     },
 ]
 
@@ -53,9 +53,14 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+    //  TODO: SETUP AUTH GUARD HERE
     const store = useMainStore()
     if (to.fullPath === '/login' && store.isLoggedIn === true) {
         next({ name: 'HomePage' })
+    }
+    if (to.meta.auth && store.isLoggedIn === false && from.name !== 'Login') {
+        console.log('Auth guard: not logged in, redirecting to login page')
+        next({ name: 'Login' })
     }
     else {
         next()

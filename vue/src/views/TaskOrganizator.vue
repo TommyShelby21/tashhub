@@ -32,11 +32,8 @@
             </template>
         </Modal>
         <div class="flex gap-5 mt-3">
-            <div v-for="task in teamTasks" :key="task.id"
-                class="px-4 py-2 flex text-white font-semibold rounded-4xl cursor-grab hover:bg-gray-800 transition"
-                draggable="true" @dragstart="onDragStart(task.id)" style="background-color: var(--secondary-color)">
-                <span class="me-2">{{ task.name }}</span>
-                <IconInfoCircleFilled class="cursor-pointer" @click="openTaskDetail(task.id)" />
+            <div v-for="task in teamTasks" :key="task.id">
+                <Task :task="task" />
             </div>
         </div>
         <!-- Assign members to task Modal -->
@@ -92,13 +89,13 @@
 
 </template>
 <script setup>
-import { IconInfoCircleFilled } from '@tabler/icons-vue';
 import { computed, ref } from 'vue';
 import { useMainStore } from '../store';
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import Modal from '../components/Modal.vue';
 import ActualTasksTable from '../components/ActualTasksTable.vue';
+import Task from '../components/Task.vue';
 import { IconUserCircle } from '@tabler/icons-vue';
 import { IconPlus } from '@tabler/icons-vue';
 import Multiselect from 'vue-multiselect'
@@ -116,12 +113,6 @@ function loadData() {
     mainStore.api.get(`/team/${route.params.id}/tasks`).then((response) => {
         teamTasks.value = response.data.tasks;
     });
-}
-
-//
-const draggedTaskId = ref(null);
-function onDragStart(taskId) {
-    draggedTaskId.value = taskId;
 }
 
 // Open Task
@@ -181,4 +172,4 @@ const assignMembers = () => {
 
 
 </script>
-<style lang="scss" scoped></style>
+<style scoped></style>

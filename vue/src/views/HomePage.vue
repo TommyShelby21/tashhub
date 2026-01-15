@@ -7,11 +7,10 @@
     </div>
 </template>
 <script setup>
-import { onMounted } from 'vue'
 import { useMainStore } from '../store'
 import ActualTasksTable from '../components/ActualTasksTable.vue';
 
-
+const store = useMainStore();
 
 </script>
 <style lang="">
