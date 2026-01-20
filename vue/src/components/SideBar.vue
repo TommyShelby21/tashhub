@@ -21,6 +21,11 @@
                         <span class="ms-3">Můj účet</span>
                     </router-link>
                 </li>
+                <li>
+                    <router-link :to="{ path: '/team' + (selectedTeam ? '/' + selectedTeam : '') }" class="flex items-center p-2 rounded-lg link">
+                        <span class="ms-3">Management týmu</span>
+                    </router-link>
+                </li>
                 <li v-if="selectedTeam">
                     <router-link :to="{ path: `/team/${selectedTeam}/task-organizator` }"
                         class="flex items-center p-2 rounded-lg link">
@@ -76,7 +81,6 @@ const logout = () => {
     mainStore.api.post('/api/logout/', {}).then(() => {
         window.location.href = '/login';
         mainStore.setUser(null);
-        mainStore.setSelectedTeam(null);
     });
 }
 const loadData = () => {
@@ -89,6 +93,7 @@ const selectTeam = () => {
     mainStore.api.post('/profile/set_user_profile/', { team: selectedTeam.value }).then((response) => {
         console.log("Nastaven vybraný tým:", selectedTeam.value);
         mainStore.setSelectedTeam(selectedTeam.value);
+        window.location.reload();
     });
 }
 

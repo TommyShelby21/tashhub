@@ -6,6 +6,7 @@ import Register from './views/Register.vue'
 import Profile from './views/Profile.vue'
 import AddTeam from './views/AddTeam.vue'
 import TaskOrganizator from './views/TaskOrganizator.vue'
+import Team from './views/Team.vue'
 
 
 const routes = [
@@ -31,6 +32,12 @@ const routes = [
         path: '/profile',
         name: 'Profile',
         component: Profile,
+        meta: { navbar: true, auth: true }
+    },
+    {
+        path: '/team/:id',
+        name: 'Team',
+        component: Team,
         meta: { navbar: true, auth: true }
     },
     {

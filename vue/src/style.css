@@ -48,3 +48,10 @@ h2 {
 .sidebar {
     background-color: var(--main-color);
 }
+
+.main_div {
+    background-color: var(--main-color);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 32px;
+}

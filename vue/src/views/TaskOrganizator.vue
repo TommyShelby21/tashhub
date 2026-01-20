@@ -24,8 +24,7 @@
                     <div class="mt-2">
                         <label>Přiřadit členy</label>
                         <select class="border-1 border-gray-300 p-1 w-full mt-1" multiple v-model="addTask.users">
-                            <option value="1">Použitelné</option>
-                            <option value="2">Nepoužitelné</option>
+                            <option v-for="member in teamMembers" :value="member.id">{{ member.user.username }}</option>
                         </select>
                     </div>
                 </div>
@@ -104,12 +103,12 @@ const mainStore = useMainStore();
 const route = useRoute();
 
 onMounted(() => {
-    loadData()
+    loadTasks()
 })
 
-// Load Data
+// Load Tasks
 const teamTasks = ref([])
-function loadData() {
+function loadTasks() {
     mainStore.api.get(`/team/${route.params.id}/tasks`).then((response) => {
         teamTasks.value = response.data.tasks;
     });
@@ -136,7 +135,7 @@ const addTask = ref({
 })
 function submitNewTask() {
     mainStore.api.post(`/team/${route.params.id}/tasks/add/`, addTask.value).then((response) => {
-        loadData()
+        loadTasks()
         openedTaskModal.value = false
     })
 }

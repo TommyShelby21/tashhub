@@ -14,13 +14,6 @@
                     <label class="">Název týmu:</label>
                     <input type="text" placeholder="Zadejte název týmu" class="mt-1" v-model="teamName"></input>
                 </div>
-                <div class="form-group grid mt-4">
-                    <label class="">Členové:</label>
-                    <Multiselect v-model="teamUsers" :options="users" :multiple="true" :close-on-select="false"
-                        :preserve-search="true" track-by="id" label="username" placeholder="Vyberte členy týmu"
-                        select-label="Vybrat" deselect-label="Odstranit" class="custom-multiselect">
-                    </Multiselect>
-                </div>
                 <div class="mt-5">
                     <button class="btn btn_main" @click="createTeam()">Vytvořit tým</button>
                 </div>
@@ -31,7 +24,6 @@
 <script setup>
 import { useMainStore } from '../store'
 import { onMounted, ref } from 'vue'
-import Multiselect from 'vue-multiselect'
 
 const mainStore = useMainStore();
 
@@ -50,14 +42,12 @@ const loadUsers = () => {
 }
 
 // Add Team
-const teamUsers = ref([])
 const teamName = ref('')
 const success = ref(false)
 
 const createTeam = () => {
-    mainStore.api.post(`/team/add`, { name: teamName.value, users: teamUsers.value }).then((response) => {
+    mainStore.api.post(`/team/add`, { name: teamName.value }).then((response) => {
         success.value = true
-        teamUsers.value = []
         teamName.value = ''
 
     }).catch(err => {

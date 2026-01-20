@@ -1,5 +1,5 @@
 <template>
-    <div class="profile grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="profile main_div grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- PROFILE PICTURE -->
         <div class="flex flex-col items-center">
             <h2 class="section-title">Profilový obrázek</h2>
@@ -38,10 +38,7 @@ const mainStore = useMainStore()
 </script>
 <style scoped>
 .profile {
-    padding: 2rem;
-    background-color: var(--main-color);
     color: var(--white);
-    border-radius: 32px;
     min-height: 500px;
     max-height: fit-content;
 }
