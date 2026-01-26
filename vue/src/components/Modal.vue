@@ -18,10 +18,13 @@
             </div>
 
             <div class="flex justify-end mt-4 gap-2 col-span-12">
-                <button @click="$emit('close')" class="btn px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                <button @click="$emit('delete')" class="btn btn_delete px-4 py-2 rounded" v-if="deleteButton">
+                    Smazat
+                </button>
+                <button @click="$emit('close')" class="btn btn_cancel px-4 py-2 rounded">
                     Zavřít
                 </button>
-                <button @click="$emit('submit')" class="btn btn_main px-4 py-2 rounded hover:bg-gray-400">
+                <button @click="$emit('submit')" class="btn btn_submit px-4 py-2 rounded" v-if="submitButton">
                     Potvrdit
                 </button>
             </div>
@@ -30,7 +33,15 @@
 </template>
 <script setup>
 defineProps({
-    title: String
+    title: String,
+    deleteButton: {
+        type: Boolean,
+        default: false
+    },
+    submitButton: {
+        type: Boolean,
+        default: false
+    }
 })
 
 </script>

@@ -4,8 +4,10 @@
     --main-color: #131313;
     --black: #000000;
     --secondary-color: rgba(255, 255, 255, 0.08);
+    --grey: rgba(255, 255, 255, 0.2);
     --white: #ffffff;
     --text-color: oklch(96.7% 0.003 264.542);
+    --red: #FF4C4C;
 }
 
 input {
@@ -42,6 +44,21 @@ h2 {
 
 .btn_secondary {
     background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn_submit {
+    background-color: var(--grey);
+    color: var(--white);
+}
+
+.btn_cancel {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn_delete {
+    background-color: var(--red);
     color: var(--white);
 }
 

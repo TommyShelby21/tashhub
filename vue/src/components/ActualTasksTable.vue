@@ -1,60 +1,45 @@
 <template>
     <div class="flex items-center gap-5 mb-4 mt-10">
-        <div class="flex items-center gap-2">
-            <span class="font-semibold" style="font-size: 16px;">{{ formattedCurrentDate }}</span>
+        <div class="flex items-center gap-2 current_time_div">
+            <span>{{ formattedCurrentDate }}</span>
         </div>
         <div class="gap-2 flex">
-            <button class="btn btn_main" @click="previousWeek">
+            <button class="btn btn_main previous" @click="previousWeek">
                 <span>
                     < </span>
             </button>
-            <button class="btn btn_main" @click="nextWeek">></button>
+            <button class="btn btn_main next" @click="nextWeek">></button>
         </div>
     </div>
-    <div class="h-[600px] border border-gray-300 overflow-x-auto overflow-y-auto">
-        <table class="table-fixed w-full border-collapse">
-            <thead class="bg-gray-200 sticky top-0 z-10">
-                <tr>
+    <div class="h-[600px] overflow-x-auto overflow-y-auto">
+        <table class="table-fixed w-full">
+            <thead class="sticky top-0 z-10" style="background-color: var(--main-color); color: var(--text-color);">
+                <tr class="">
                     <th class="w-24 px-4 py-2">Čas</th>
                     <th class="px-4 py-2" v-for="day in weekDays" :key="day">{{ day.label }}</th>
                 </tr>
             </thead>
-            <tbody class="bg-gray-50 text-sm">
+            <tbody class="text-sm">
                 <tr v-for="hour in hours" :key="hour">
                     <td class="border px-2 py-1 font-medium bg-gray-100 text-center">{{ hour }}</td>
                     <td v-for="day in weekDays" :key="day.index"
                         class="border px-2 py-6 hover:bg-blue-100 cursor-pointer" @dragover.prevent
                         @drop="onDrop(day, hour)">
 
-                        <div v-for="task in tasksForCell(day.index, hour)" :key="task.id"
-                            class="p-1 rounded text-xs mb-1 text-white font-semibold cursor-grab flex items-center gap-1"
-                            style="background-color: var(--secondary-color);" draggable="true"
-                            @dragstart="onDragStart(task.task.id)">
-                            {{ task.task.name }}
-                            <IconInfoCircleFilled class="cursor-pointer" @click="openTaskDetail(task.id)" />
+                        <div v-for="task in tasksForCell(day.index, hour)" :key="task.id">
+                            <Task :task="task.task" draggable="true" @dragstart="onDragStart(task.task.id)" />
                         </div>
                     </td>
                 </tr>
-                <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'">
-                    <template #modal-content>
-                        <div class="flex flex-col">
-                            <span class="font-semibold" style="font-size: 20px;">{{ openedTask.task.name }}</span>
-                            <p>
-                                {{ openedTask.task.description }}
-                            </p>
-                        </div>
-                    </template>
-                </Modal>
             </tbody>
         </table>
     </div>
 </template>
 <script setup>
-import { IconInfoCircleFilled } from '@tabler/icons-vue';
-import { onMounted, ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useMainStore } from '../store'
 import { useRoute } from 'vue-router'
-import Modal from '../components/Modal.vue';
+import Task from '../components/Task.vue';
 
 const mainStore = useMainStore()
 const route = useRoute()
@@ -69,8 +54,7 @@ const props = defineProps({
 // Update current date
 const currentDate = ref(new Date())
 const assignedTasks = ref([])
-const openedTaskDetail = ref(false)
-const openedTask = ref({})
+
 
 watch(
     () => mainStore.selectedTeam,
@@ -187,7 +171,6 @@ const saveTaskChanges = (day, hour, taskId) => {
         datetime: correct_datetime,
         taskId: taskId
     }
-
     mainStore.api.put(`/team/${route.params.id}/tasks/update/`, postData).then((response) => {
         loadData()
     })
@@ -197,13 +180,20 @@ const onDragStart = (taskId) => {
     emit('onDragStart', taskId)
 }
 
-const openTaskDetail = (taskId) => {
-    openedTask.value = assignedTasks.value.find(task => task.id === taskId)
-    openedTaskDetail.value = true
+</script>
+<style scoped>
+.current_time_div {
+    color: var(--white);
+    background-color: var(--main-color);
+    font-weight: 700;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 8px;
 }
 
-
-</script>
-<style lang="">
-
+.previous,
+.next {
+    font-size: 20px;
+    padding: 6px 30px;
+}
 </style>

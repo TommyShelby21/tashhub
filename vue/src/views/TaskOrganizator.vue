@@ -32,7 +32,7 @@
         </Modal>
         <div class="flex gap-5 mt-3">
             <div v-for="task in teamTasks" :key="task.id">
-                <Task :task="task" />
+                <Task :task="task" @draggedTaskId="(id) => draggedTaskId = id" />
             </div>
         </div>
         <!-- Assign members to task Modal -->
@@ -79,10 +79,9 @@
                 </div>
             </template>
         </Modal>
-
         <div class="mt-5">
             <ActualTasksTable :draggedTaskId="draggedTaskId" :teamTasks="teamTasks"
-                @clearDraggedTaskId="draggedTaskId = null" @onDragStart="onDragStart" />
+                @clearDraggedTaskId="draggedTaskId = null" @onDragStart="(id) => draggedTaskId = id" />
         </div>
     </div>
 
@@ -105,6 +104,8 @@ const route = useRoute();
 onMounted(() => {
     loadTasks()
 })
+
+const draggedTaskId = ref(null);
 
 // Load Tasks
 const teamTasks = ref([])
