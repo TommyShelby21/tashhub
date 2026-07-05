@@ -101,23 +101,29 @@ def create_demo(request):
     username = "demo_" + "".join(random.choices(string.ascii_letters + string.digits, k=5))
     password = "".join(random.choices(string.ascii_letters + string.digits, k=10))
 
-    user = User.objects.create_user(
-        username=username,
-        email=f"{username}@example.com",
-        password=password
-    )
+    try:
+        user = User.objects.create_user(
+            username=username,
+            email=f"{username}@example.com",
+            password=password
+        )
 
-    team = Team.objects.create(
-        name="demo".join(random.choices(string.ascii_letters + string.digits, k=5))
-    )
+        team = Team.objects.create(
+            name="demo".join(random.choices(string.ascii_letters + string.digits, k=5))
+        )
 
-    TeamMember.objects.create(
-        user=user,
-        leader=True,
-        team=team
-    )
+        TeamMember.objects.create(
+            user=user,
+            leader=True,
+            team=team
+        )
 
-    user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise ValueError("Authentication failed after demo user creation")
+
+    except Exception as e:
+        return Response({"error": f"Demo creation failed: {str(e)}"}, status=400)
 
     response = Response()
 
@@ -140,7 +146,7 @@ def create_demo(request):
         max_age=7 * 24 * 60 * 60    # 7 dní platnost refresh tokenu
     )
 
-    response.data = { # Add data about the user
+    response.data = {
         'user': UserSerializer(user).data,
         'message': 'Demo account created successfully',
     }
