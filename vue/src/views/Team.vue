@@ -51,7 +51,7 @@ onMounted(() => {
 const selectedTeam = ref(null)
 const teamMembers = ref([])
 const loadTeamMembers = () => {
-    mainStore.api.get(`/team/${route.params.id}/members`).then((response) => {
+    mainStore.api.get(`/team/${route.params.id}/members/`).then((response) => {
         teamMembers.value = response.data.members
     })
 }
