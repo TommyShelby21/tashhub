@@ -17,8 +17,8 @@ services:
   backend:
     build:
       context: .
-    command: >
-      sh -c "gunicorn backend.wsgi:application --bind 0.0.0.0:60000"
+    command:
+      ["/app/entrypoint.prod.sh"]
     volumes:
       - static_volume:/app/staticfiles
     environment:
