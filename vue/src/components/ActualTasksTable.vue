@@ -75,7 +75,7 @@ watch(
 
 function loadData() {
     if (mainStore.selectedTeam) {
-        mainStore.api.get(`/team/${mainStore.selectedTeam}/assigned_tasks`)
+        mainStore.api.get(`/team/${mainStore.selectedTeam}/assigned_tasks/`)
             .then((response) => {
                 assignedTasks.value = response.data.assigned_tasks.filter(at => !at.task.is_hidden);
             })

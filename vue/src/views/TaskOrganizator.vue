@@ -106,7 +106,7 @@ const draggedTaskId = ref(null);
 // Load Tasks
 const teamTasks = ref([])
 function loadTasks() {
-    mainStore.api.get(`/team/${route.params.id}/tasks`).then((response) => {
+    mainStore.api.get(`/team/${route.params.id}/tasks/`).then((response) => {
         teamTasks.value = response.data.tasks.filter(t => !t.is_hidden)
     });
 }
@@ -145,7 +145,7 @@ function submitNewTask() {
 // Load Team Members
 const teamMembers = ref([])
 onMounted(() => {
-    mainStore.api.get(`/team/${route.params.id}/members`).then((response) => {
+    mainStore.api.get(`/team/${route.params.id}/members/`).then((response) => {
         teamMembers.value = response.data.members;
     });
 })
@@ -165,7 +165,7 @@ const assignMembers = () => {
         taskId: openedTask.value.id,
         teamMembers: assignedTeamMembers.value.map(member => member.id)
     }
-    mainStore.api.post(`/team/${route.params.id}/tasks/assign`, payload).then((response) => {
+    mainStore.api.post(`/team/${route.params.id}/tasks/assign/`, payload).then((response) => {
         loadTasks()
         addingMembers.value = false
     })
