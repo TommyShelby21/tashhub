@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken, TokenError
 from django.conf import settings
 import random
-from system.models import Team, TeamMember
+from system.models import Team, TeamMember, UserProfile
 
 
 @api_view(['POST'])
@@ -39,6 +39,8 @@ def login(request):
     username = request.data.get('username')
 
     user = authenticate(username=username, password=password)
+    user_data = UserSerializer(user).data
+
     if user is not None:
         response = Response()
 
@@ -61,7 +63,7 @@ def login(request):
             max_age=7 * 24 * 60 * 60    # 7 dní platnost refresh tokenu
         )
         response.data = {
-            'user': UserSerializer(user).data,
+            'user': user_data,
             'message': 'Login successful',
         }
 
@@ -116,6 +118,12 @@ def create_demo(request):
             user=user,
             leader=True,
             team=team
+        )
+
+        UserProfile.objects.create(
+            user=user,
+            selected_team=team,
+            demo=True
         )
 
         user = authenticate(username=username, password=password)

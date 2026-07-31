@@ -5,8 +5,8 @@ from system.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', users, name='users'),
-    path('user/<int:user_id>/', user_detail, name='user_detail'),
-    path('profile/', profile, name='profile'),
+    path('user/<int:user_id>/', user, name='user'),
+    path('profile/<int:user_id>/', user_profile, name='user_profile'),
     path('profile/set_user_profile/', set_user_profile, name='set_user_profile'),
     path('available_user_teams/', available_user_teams, name='available_user_teams'),
     path('team/add', add_team, name='add_team'),

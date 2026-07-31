@@ -55,9 +55,11 @@ export const useMainStore = defineStore('main', {
     actions: {
         setUser(user) {
             this.user = user;
+            console.log("store:", user, this.user)
         },
         setSelectedTeam(team) {
             this.selectedTeam = team
+            console.log('store>', team, this.selectedTeam)
         },
         setDemoUser(demo) {
             this.demoUser = demo

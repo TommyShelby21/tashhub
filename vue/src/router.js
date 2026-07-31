@@ -62,6 +62,8 @@ export const router = createRouter({
 router.beforeEach((to, from, next) => {
     //  TODO: SETUP AUTH GUARD HERE
     const store = useMainStore()
+
+    console.log(store.isLoggedIn)
     if (to.fullPath === '/login' && store.isLoggedIn === true) {
         next({ name: 'HomePage' })
     }

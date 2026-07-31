@@ -32,8 +32,7 @@
                         @dragover.prevent @drop="onDrop(day, hour)">
 
                         <div v-for="task in tasksForCell(day.index, hour)" :key="task.id" class="mb-1 last:mb-0">
-                            <Task :task="task.task" draggable="true" @dragstart="onDragStart(task.task.id)"
-                                @deleteTask="handleTaskDelete" />
+                            <Task :task="task.task" @draggedTaskId="onDragStart" @deleteTask="handleTaskDelete" />
                         </div>
                     </td>
                 </tr>

@@ -1,7 +1,9 @@
 <template>
-    <div class="relative min-h-[calc(100vh-2rem)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200">
+    <div
+        class="relative min-h-[calc(100vh-2rem)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200">
         <div class="absolute top-6 right-6">
-            <button @click="demoLogin()" type="button" class="btn btn_secondary text-sm px-4 py-2 rounded-full shadow-sm">
+            <button @click="demoLogin()" type="button"
+                class="btn btn_secondary text-sm px-4 py-2 rounded-full shadow-sm">
                 Demo režim
             </button>
         </div>
@@ -106,11 +108,12 @@ function loginUser() {
     ).then(response => {
         mainStore.api.get(`/user/${response.data.user.id}/`)
             .then((response) => {
-                mainStore.setUser(response.data.user);
+                console.log(response.data.items)
+                mainStore.setUser(response.data.items);
+                router.push({ name: 'HomePage' });
             }).catch(err => {
                 console.error('Chyba při načítání profilu uživatele:', err);
             });
-        router.push({ name: 'HomePage' });
     }).catch(err => {
         console.error(err)
     })

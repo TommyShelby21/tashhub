@@ -37,7 +37,7 @@
                         <span class="ms-3">Organizace úkolů</span>
                     </router-link>
                 </li>
-                <li v-if="mainStore.demoUser">
+                <li v-if="!mainStore.demoUser">
                     <router-link :to="{ path: '/add-team' }"
                         class="flex items-center p-2.5 rounded-lg link transition-colors">
                         <span class="ms-3">Vytvořit nový tým</span>
@@ -53,7 +53,8 @@
             <div class="mb-6 px-2">
                 <label for="team"
                     class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Vyberte tým</label>
-                <select
+                <div v-if="loading">...</div>
+                <select v-if="!loading"
                     class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                     v-model="selectedTeam" @change="selectTeam()">
                     <option disabled value="null">Vyberte tým...</option>
@@ -78,11 +79,14 @@ import { useMainStore } from '../store';
 const sidebarOpened = ref(false); // Controls visibility on mobile
 const availableTeams = ref([]);
 const selectedTeam = ref(null);
+const loading = ref(false)
 
 const mainStore = useMainStore();
 
 onMounted(() => {
-    selectedTeam.value = mainStore.selectedTeam
+    loading.value = true
+    loadData();
+    loading.value = false
 });
 
 const toggleSidebar = () => {
@@ -100,26 +104,27 @@ const loadData = async () => {
     mainStore.api.get('/available_user_teams/').then((response) => {
         availableTeams.value = response.data.teams;
     });
-    mainStore.api.get(`/user/${mainStore.user.id}/`).then((response) => {
+    mainStore.api.get(`/profile/${mainStore.user.id}/`).then((response) => {
+        console.log(response.data)
         mainStore.setSelectedTeam(response.data.user?.selected_team || null)
         mainStore.setDemoUser(response.data.user?.demo || null)
+        selectedTeam.value = mainStore.selectedTeam
     });
 }
 
 const selectTeam = () => {
     mainStore.api.post('/profile/set_user_profile/', { team: selectedTeam.value }).then((response) => {
-        console.log("Nastaven vybraný tým:", selectedTeam.value);
         mainStore.setSelectedTeam(selectedTeam.value);
         window.location.reload();
     });
 }
 
-watch(() => mainStore.user, (newUser) => {
-    if (newUser) {
-        loadData();
-    }
-}, { immediate: true }
-);
+// watch(() => mainStore.user, (newUser) => {
+//     if (newUser) {
+//         loadData();
+//     }
+// }, { immediate: true }
+// );
 
 </script>
 

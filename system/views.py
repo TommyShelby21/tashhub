@@ -8,16 +8,6 @@ from django.contrib.auth.models import User
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def profile(request):
-    user_serializer = UserSerializer(request.user)
-    user_profile = UserProfile.objects.get(user=request.user)
-    user_profile_serializer = UserProfileSerializer(user_profile)
-
-    return Response({'user': user_serializer.data, 'user_profile': user_profile_serializer.data}, status=200)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def users(request):
     users = User.objects.all()
 
@@ -28,8 +18,19 @@ def users(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def user_detail(request, user_id):
+def user(request, user_id):
     user = User.objects.get(id=user_id)
+
+    serializer = UserSerializer(user)
+
+    return Response({'items': serializer.data}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request, user_id):
+    user = User.objects.get(id=user_id)
+
     profile = UserProfile.objects.get(user=user)
 
     serializer = UserProfileSerializer(profile)
@@ -178,11 +179,12 @@ def add_team(request):
 def set_user_profile(request):
     user = request.user
 
-    user_profile, created = UserProfile.objects.get_or_create(user=user)
-
     team_id = request.data.get('team')
-    print(team_id)
+
     team = Team.objects.get(id=team_id)
+
+    user_profile, created = UserProfile.objects.get_or_create(user=user, selected_team=team)
+
     user_profile.selected_team = team
     user_profile.save()
 
