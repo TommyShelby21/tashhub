@@ -74,10 +74,33 @@ def add_team_task(request, team_id):
     if not task_name:
         return Response({'error': 'Task name is required'}, status=400)
 
-    task = Task.objects.create(name=task_name, description=task_description, team=team)
+    task = Task.objects.create(name=task_name, description=task_description, team=team, created_by=request.user)
     task.team_members.add(*task_users)
 
     return Response({'message': 'Task created successfully'}, status=201)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_team_task(request, team_id):
+    team = Team.objects.get(id=team_id)
+
+    task_id = request.data.get('taskId')
+    task = Task.objects.get(id=task_id, team=team)
+
+    task_name = request.data.get('name')
+    task_description = request.data.get('description', '')
+
+    if not task_name:
+        return Response({'error': 'Task name is required'}, status=400)
+
+    task.name = task_name
+    task.description = task_description
+    task.save()
+
+    serializer = TaskSerializer(task)
+
+    return Response({'task': serializer.data}, status=200)
 
 
 @api_view(["PUT"])
@@ -110,7 +133,6 @@ def team_tasks_update(request, team_id):
     team_member_ids = request.data.get('teamMemberIds', [])
 
     datetime = request.data.get('datetime')
-    print(datetime)
 
     assigned_task, created = AssignedTask.objects.update_or_create(task=task, team=team, defaults={'datetime': datetime})
 

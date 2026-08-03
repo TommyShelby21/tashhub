@@ -1,12 +1,29 @@
 <template>
     <div>
-        <h1 style="font-size: 26px; font-weight: 700;">Organizace úkolů v týmu</h1>
-    </div>
-    <div class="mt-4">
-        <div class="flex">
-            <h2 class="me-5" style="font-size: 20px; font-weight: 500;">Aktuální úkoly:</h2>
-            <button class="btn btn_main" @click="openTaskModal">Přidat úkol</button>
+        <div class="flex flex-col gap-1 mb-6">
+            <p class="text-sm font-semibold text-blue-600 uppercase tracking-wider">Tým</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Organizace úkolů</h1>
+            <p class="text-sm text-slate-500">Vytvářejte úkoly a přetahujte je do plánu týdne.</p>
         </div>
+
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-base font-bold text-slate-800">Backlog úkolů</h2>
+                <button class="btn btn_main" @click="openTaskModal">
+                    <IconPlus :size="18" stroke="2" />
+                    Přidat úkol
+                </button>
+            </div>
+
+            <div v-if="teamTasks.length > 0" class="flex flex-wrap gap-3">
+                <Task v-for="task in teamTasks" :key="task.id" :task="task"
+                    @draggedTaskId="(id) => draggedTaskId = id" @deleteTask="loadTasks" @taskUpdated="loadTasks" />
+            </div>
+            <div v-else class="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-6 py-10 text-center text-sm text-slate-400">
+                Zatím žádné úkoly. Přidejte první pomocí tlačítka výše.
+            </div>
+        </div>
+
         <!-- Add task Modal -->
         <Modal v-if="openedTaskModal" @close="openedTaskModal = false" @submit="submitNewTask" :title="'Přidat úkol'" :submitButton="true">
             <template #modal-content>
@@ -34,18 +51,14 @@
                 </div>
             </template>
         </Modal>
-        <div class="flex gap-5 mt-3">
-            <div v-for="task in teamTasks" :key="task.id">
-                <Task :task="task" @draggedTaskId="(id) => draggedTaskId = id" @deleteTask="loadTasks" />
-            </div>
-        </div>
+
         <!-- Assign members to task Modal -->
         <Modal v-if="openedTaskDetail" @close="openedTaskDetail = false" :title="'Detail úkolu'"
             @submit="assignMembers()" :submitButton="true">
             <template #next-header>
                 <div class="flex cursor-pointer btn btn_main justify-center items-center"
                     @click="addingMembers = !addingMembers">
-                    <IconPlus stroke={2} class="me-2" />
+                    <IconPlus :size="18" stroke="2" class="me-2" />
                     <span>Přiřadit členy</span>
                 </div>
             </template>
@@ -54,7 +67,7 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div v-if="openedTask.team_members.length > 0" v-for="team_member in openedTask.team_members"
                             :key="team_member.id" class="col-span-1 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <IconUserCircle stroke={2} class="w-10 h-10 text-slate-600" />
+                            <IconUserCircle :size="32" stroke="1.8" class="text-slate-600" />
                             <span class="font-medium text-slate-700">{{ team_member.user.username }}</span>
                         </div>
                         <div v-else class="col-span-1 rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -75,7 +88,8 @@
                 </div>
             </template>
         </Modal>
-        <div class="mt-5">
+
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-6">
             <ActualTasksTable :draggedTaskId="draggedTaskId" :teamTasks="teamTasks"
                 @clearDraggedTaskId="draggedTaskId = null" @onDragStart="(id) => draggedTaskId = id" @deleteTask="loadTasks" />
         </div>
@@ -90,8 +104,7 @@ import { useRoute } from 'vue-router';
 import Modal from '../components/Modal.vue';
 import ActualTasksTable from '../components/ActualTasksTable.vue';
 import Task from '../components/Task.vue';
-import { IconUserCircle } from '@tabler/icons-vue';
-import { IconPlus } from '@tabler/icons-vue';
+import { IconUserCircle, IconPlus } from '@tabler/icons-vue';
 import Multiselect from 'vue-multiselect'
 
 const mainStore = useMainStore();
@@ -173,4 +186,58 @@ const assignMembers = () => {
 
 
 </script>
-<style scoped></style>
+<style scoped>
+::v-deep(.custom-multiselect .multiselect__tags) {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    min-height: 44px;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+}
+
+::v-deep(.custom-multiselect .multiselect__placeholder) {
+    color: #94a3b8;
+}
+
+::v-deep(.custom-multiselect .multiselect__input),
+::v-deep(.custom-multiselect .multiselect__single) {
+    background-color: transparent;
+    color: #1e293b;
+}
+
+::v-deep(.custom-multiselect .multiselect__content-wrapper) {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+::v-deep(.custom-multiselect .multiselect__option) {
+    color: #1e293b;
+}
+
+::v-deep(.custom-multiselect .multiselect__option--highlight) {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+::v-deep(.custom-multiselect .multiselect__option--selected) {
+    background-color: #f1f5f9;
+    font-weight: 600;
+}
+
+::v-deep(.custom-multiselect .multiselect__tag) {
+    background-color: #2563eb;
+    color: #fff;
+    border-radius: 999px;
+}
+
+::v-deep(.custom-multiselect .multiselect__tag-icon:hover) {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+::v-deep(.custom-multiselect .multiselect--disabled) {
+    opacity: 0.5;
+}
+</style>

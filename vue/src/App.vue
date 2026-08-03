@@ -1,8 +1,10 @@
 <template>
-  <div class="min-h-screen box-border p-4">
+  <div class="min-h-screen bg-slate-50 box-border">
     <SideBar v-if="showNavbar" />
-    <div :class="showNavbar ? 'sm:ml-64 md:ml-64' : ''">
-      <router-view />
+    <div :class="showNavbar ? 'sm:ml-72 px-4 pb-4 pt-20 sm:px-8 sm:pb-8 sm:pt-8' : ''">
+      <div :class="showNavbar ? 'max-w-6xl mx-auto' : ''">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>

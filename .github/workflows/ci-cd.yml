@@ -1,0 +1,45 @@
+name: CI/CD
+
+# kdy spustit
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: taskhub
+          POSTGRES_USER: tomas
+          POSTGRES_PASSWORD: tomas
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout kódu
+        uses: actions/checkout
+
+      - name: Nastav Python
+        uses: actions/setup-python
+        with:
+          python-version: "3.11"
+          cache: "pip" # Zrychlí opakované běhy
+
+      - name: Nainstaluj závislosti
+        run:
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Spust testy
+        env:
+          DATABASE_URL: postgres://tomas:tomas@localhost:5432/taskhub
+          DJANGO_SETTINGS_MODULE: backend.production
+        run:
+          python manage.py test

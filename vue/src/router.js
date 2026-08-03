@@ -3,9 +3,6 @@ import { useMainStore } from './store.js'
 import HomePage from './views/HomePage.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
-import Profile from './views/Profile.vue'
-import AddTeam from './views/AddTeam.vue'
-import TaskOrganizator from './views/TaskOrganizator.vue'
 import Team from './views/Team.vue'
 
 
@@ -31,7 +28,7 @@ const routes = [
     {
         path: '/profile',
         name: 'Profile',
-        component: Profile,
+        component: () => import ('./views/Profile.vue'),
         meta: { navbar: true, auth: true }
     },
     {
@@ -43,13 +40,13 @@ const routes = [
     {
         path: '/team/:id/task-organizator',
         name: 'TaskOrganizator',
-        component: TaskOrganizator,
+        component: () => import ('./views/TaskOrganizator.vue'),
         meta: { navbar: true, auth: true }
     },
     {
         path: '/add-team',
         name: 'AddTeam',
-        component: AddTeam,
+        component: () => import ('./views/AddTeam.vue'),
         meta: { navbar: true, auth: true }
     },
 ]

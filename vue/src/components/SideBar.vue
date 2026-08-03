@@ -1,70 +1,110 @@
 <template>
-    <button v-if="!sidebarOpened" type="button" class="sm:hidden m-2 bg-blue-500 px-5 py-2 text-white rounded-4xl"
-        @click="toggleSidebar()">
-        <span>Otevrit sidebar</span>
-    </button>
+    <!-- Mobile top bar -->
+    <div
+        class="sm:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 h-14 bg-white border-b border-slate-200">
+        <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
+                <IconLayoutKanban :size="18" stroke="2" />
+            </div>
+            <span class="font-bold text-slate-900 tracking-tight">TaskHub</span>
+        </div>
+        <button type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
+            @click="toggleSidebar()">
+            <IconMenu2 :size="20" />
+        </button>
+    </div>
+
+    <!-- Mobile backdrop -->
+    <div v-if="sidebarOpened" class="sm:hidden fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-[1px]"
+        @click="toggleSidebar()"></div>
 
     <aside :class="[
-        'fixed top-0 left-0 w-64 h-full transition-transform z-50 flex flex-col',
+        'fixed top-0 left-0 w-72 h-full transition-transform duration-200 ease-out z-50 flex flex-col',
         sidebarOpened ? 'translate-x-0' : '-translate-x-full',
-        'sm:translate-x-0' // Always open on sm and up
+        'sm:translate-x-0'
     ]">
-        <div class="h-full px-4 py-6 overflow-y-auto flex flex-col flex-1 sidebar bg-white">
-            <div class="mb-8 px-2">
-                <h1 class="text-xl font-bold text-blue-600 tracking-tight">TaskHub</h1>
-            </div>
-            <ul class="flex flex-col flex-grow gap-1">
-                <li>
-                    <router-link :to="{ path: '/' }" class="flex items-center p-2.5 rounded-lg link transition-colors">
-                        <span class="ms-3">Nástěnka</span>
-                    </router-link>
-                </li>
-                <li>
-                    <router-link :to="{ path: '/profile' }"
-                        class="flex items-center p-2.5 rounded-lg link transition-colors">
-                        <span class="ms-3">Můj účet</span>
-                    </router-link>
-                </li>
-                <li v-if="selectedTeam">
-                    <router-link :to="{ path: '/team' + (selectedTeam ? '/' + selectedTeam : '') }"
-                        class="flex items-center p-2.5 rounded-lg link transition-colors">
-                        <span class="ms-3">Management týmu</span>
-                    </router-link>
-                </li>
-                <li v-if="selectedTeam">
-                    <router-link :to="{ path: `/team/${selectedTeam}/task-organizator` }"
-                        class="flex items-center p-2.5 rounded-lg link transition-colors">
-                        <span class="ms-3">Organizace úkolů</span>
-                    </router-link>
-                </li>
-                <li v-if="!mainStore.demoUser">
-                    <router-link :to="{ path: '/add-team' }"
-                        class="flex items-center p-2.5 rounded-lg link transition-colors">
-                        <span class="ms-3">Vytvořit nový tým</span>
-                    </router-link>
-                </li>
+        <div class="h-full px-4 py-5 overflow-y-auto flex flex-col flex-1 bg-white border-r border-slate-200">
 
-                <li v-if="sidebarOpened">
-                    <button @click="toggleSidebar" class="bg-blue-500 px-5 py-2 rounded-4xl">
-                        Zavřít sidebar
-                    </button>
-                </li>
-            </ul>
-            <div class="mb-6 px-2">
+            <div class="flex items-center justify-between mb-8 px-2">
+                <div class="flex items-center gap-2.5">
+                    <div
+                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/30">
+                        <IconLayoutKanban :size="20" stroke="2" />
+                    </div>
+                    <span class="text-lg font-bold text-slate-900 tracking-tight">TaskHub</span>
+                </div>
+                <button type="button"
+                    class="sm:hidden flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"
+                    @click="toggleSidebar()">
+                    <IconX :size="18" />
+                </button>
+            </div>
+
+            <nav class="flex flex-col flex-grow gap-1">
+                <p class="px-3 mb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Menu</p>
+
+                <router-link :to="{ path: '/' }" class="nav-link" active-class="nav-link-active" exact>
+                    <IconLayoutDashboard :size="19" stroke="1.8" />
+                    <span>Nástěnka</span>
+                </router-link>
+
+                <router-link v-if="selectedTeam" :to="{ path: '/team' + (selectedTeam ? '/' + selectedTeam : '') }"
+                    class="nav-link" active-class="nav-link-active">
+                    <IconUsersGroup :size="19" stroke="1.8" />
+                    <span>Management týmu</span>
+                </router-link>
+
+                <router-link v-if="selectedTeam" :to="{ path: `/team/${selectedTeam}/task-organizator` }"
+                    class="nav-link" active-class="nav-link-active">
+                    <IconListCheck :size="19" stroke="1.8" />
+                    <span>Organizace úkolů</span>
+                </router-link>
+
+                <router-link :to="{ path: '/profile' }" class="nav-link" active-class="nav-link-active">
+                    <IconUserCircle :size="19" stroke="1.8" />
+                    <span>Můj účet</span>
+                </router-link>
+
+                <router-link v-if="!mainStore.demoUser" :to="{ path: '/add-team' }" class="nav-link"
+                    active-class="nav-link-active">
+                    <IconPlus :size="19" stroke="1.8" />
+                    <span>Vytvořit nový tým</span>
+                </router-link>
+            </nav>
+
+            <div class="mt-6 px-1">
                 <label for="team"
-                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Vyberte tým</label>
-                <div v-if="loading">...</div>
-                <select v-if="!loading"
-                    class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                    v-model="selectedTeam" @change="selectTeam()">
-                    <option disabled value="null">Vyberte tým...</option>
-                    <option v-for="team in availableTeams" :key="team.id" :value="team.id">{{ team.name }}</option>
-                </select>
+                    class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">
+                    Aktivní tým
+                </label>
+                <div v-if="loading" class="px-2 text-sm text-slate-400">Načítání…</div>
+                <div v-else class="relative">
+                    <select id="team" class="team-select w-full appearance-none bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 pl-3.5 pr-9 py-2.5 transition-colors"
+                        v-model="selectedTeam" @change="selectTeam()">
+                        <option disabled :value="null">Vyberte tým...</option>
+                        <option v-for="team in availableTeams" :key="team.id" :value="team.id">{{ team.name }}</option>
+                    </select>
+                    <IconChevronDown :size="16"
+                        class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                </div>
             </div>
 
-            <div class="mt-auto pt-4 border-t border-slate-100">
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-3 px-2 mb-3">
+                    <div
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-sm font-bold uppercase">
+                        {{ userInitials }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-slate-800 truncate">{{ mainStore.user?.username ||
+                            'Uživatel' }}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ mainStore.user?.email || '' }}</p>
+                    </div>
+                </div>
                 <button @click="logout"
-                    class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+                    class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-red-600 rounded-xl transition-colors">
+                    <IconLogout :size="17" stroke="1.8" />
                     <span>Odhlásit se</span>
                 </button>
             </div>
@@ -73,8 +113,20 @@
     </aside>
 </template>
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useMainStore } from '../store';
+import {
+    IconLayoutKanban,
+    IconLayoutDashboard,
+    IconUserCircle,
+    IconUsersGroup,
+    IconListCheck,
+    IconPlus,
+    IconChevronDown,
+    IconLogout,
+    IconMenu2,
+    IconX,
+} from '@tabler/icons-vue';
 
 const sidebarOpened = ref(false); // Controls visibility on mobile
 const availableTeams = ref([]);
@@ -82,6 +134,11 @@ const selectedTeam = ref(null);
 const loading = ref(false)
 
 const mainStore = useMainStore();
+
+const userInitials = computed(() => {
+    const name = mainStore.user?.username || '';
+    return name.slice(0, 2) || '??';
+});
 
 onMounted(() => {
     loading.value = true
@@ -105,7 +162,6 @@ const loadData = async () => {
         availableTeams.value = response.data.teams;
     });
     mainStore.api.get(`/profile/${mainStore.user.id}/`).then((response) => {
-        console.log(response.data)
         mainStore.setSelectedTeam(response.data.user?.selected_team || null)
         mainStore.setDemoUser(response.data.user?.demo || null)
         selectedTeam.value = mainStore.selectedTeam
@@ -119,32 +175,40 @@ const selectTeam = () => {
     });
 }
 
-// watch(() => mainStore.user, (newUser) => {
-//     if (newUser) {
-//         loadData();
-//     }
-// }, { immediate: true }
-// );
-
 </script>
 
 <style scoped>
-.sidebar {
-    color: var(--text-color);
+.team-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none;
+}
+
+.team-select::-ms-expand {
+    display: none;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.65rem;
+    font-size: 0.9rem;
     font-weight: 500;
+    color: #475569;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.link {
-    color: #64748b;
+.nav-link:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
 }
 
-.link:hover,
-.router-link-active {
-    color: #2563eb;
+.nav-link-active {
     background-color: #eff6ff;
-}
-
-.router-link-active {
+    color: #2563eb;
     font-weight: 600;
 }
 </style>

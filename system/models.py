@@ -24,6 +24,8 @@ class Task(models.Model):
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.CASCADE)
     team_members = models.ManyToManyField(TeamMember, null=True, blank=True)
     is_hidden = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='created_tasks')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class AssignedTask(models.Model):

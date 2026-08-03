@@ -1,17 +1,28 @@
 <template>
-    <div class="">
-        <h2 style="font-size: 24px; font-weight: 700;">Vaše úkoly:</h2>
-    </div>
-    <div class="mt-4">
+    <div>
+        <div class="flex flex-col gap-1 mb-6">
+            <p class="text-sm font-semibold text-blue-600 uppercase tracking-wider">{{ formattedDate }}</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Nástěnka
+            </h1>
+            <p class="text-sm text-slate-500">Tady je přehled vašich úkolů pro tento týden.</p>
+        </div>
+
         <ActualTasksTable />
     </div>
 </template>
 <script setup>
-import { useMainStore } from '../store'
+import { computed } from 'vue';
 import ActualTasksTable from '../components/ActualTasksTable.vue';
 
-const store = useMainStore();
-
+const formattedDate = computed(() => {
+    return new Date().toLocaleDateString('cs-CZ', {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+});
 </script>
 <style lang="">
 
