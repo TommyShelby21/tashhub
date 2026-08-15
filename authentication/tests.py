@@ -96,7 +96,7 @@ class RefreshTokenTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_refresh_with_valid_token_sets_new_access_cookie(self):
-        User.objects.create_user(username='u1', email='u1@example.com', password='pass12345')
+        User.objects.create_user(username='u1@example.com', email='u1@example.com', password='pass12345')
         login_response = self.client.post('/auth/login/', {
             'username': 'u1@example.com',
             'password': 'pass12345',
